@@ -18,7 +18,8 @@ const utang = Number(document.getElementById("utang").value);
 const wasiat = Number(document.getElementById("wasiat").value);
     if (nama === "") {
     alert("Nama pewaris harus diisi.");
-    return;
+    return; 
+        const hartaBersih = harta - jenazah - utang - wasiat;
 }
 
 if (!gender) {
@@ -59,23 +60,42 @@ if (!gender) {
     }
 
     let hasil = `
-        <h3>Data Berhasil Dibaca</h3>
+    <h3>Data Berhasil Dibaca</h3>
 
-        <p><strong>Total Harta:</strong><br>
-        ${formatRupiah(harta)}</p>
+    <p><strong>Nama Pewaris:</strong><br>
+    ${nama}</p>
 
-        <p><strong>Ahli Waris:</strong><br>
-        ${ahliWaris.join(", ")}</p>
+    <p><strong>Jenis Kelamin:</strong><br>
+    ${gender.value === "L" ? "Laki-laki" : "Perempuan"}</p>
 
-        <hr>
+    <p><strong>Total Harta:</strong><br>
+    ${formatRupiah(harta)}</p>
 
-        <p style="color:green;">
-        ✅ Sistem siap untuk melakukan perhitungan faraidh.
-        </p>
+    <p><strong>Biaya Jenazah:</strong><br>
+    ${formatRupiah(jenazah)}</p>
 
-        <p>
-        Versi: 1.0 (Fondasi)
-        </p>
+    <p><strong>Total Utang:</strong><br>
+    ${formatRupiah(utang)}</p>
+
+    <p><strong>Nilai Wasiat:</strong><br>
+    ${formatRupiah(wasiat)}</p>
+
+    <p><strong>Harta Bersih:</strong><br>
+    ${formatRupiah(hartaBersih)}</p>
+
+    <p><strong>Ahli Waris:</strong><br>
+    ${ahliWaris.join(", ")}</p>
+
+    <hr>
+
+    <p style="color:green;">
+    ✅ Data siap diproses ke perhitungan faraidh.
+    </p>
+
+    <p>
+    Versi 1.0 - Tahap Fondasi
+    </p>
+`;
     `;
 
     document.getElementById("hasil").innerHTML = hasil;
