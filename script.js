@@ -114,7 +114,28 @@ function hitungWaris() {
         `;
     }
 
+// =====================
+// HITUNG BAGIAN IBU
+// =====================
 
+if (ibu > 0) {
+
+    let bagianIbu;
+
+    if (adaAnak) {
+        bagianIbu = hartaBersih * 1 / 6;
+    } else {
+        bagianIbu = hartaBersih * 1 / 3;
+    }
+
+    hasilPembagian += `
+    <p>
+    <strong>👩 Ibu (${ibu} orang)</strong><br>
+    Bagian: ${formatRupiah(bagianIbu)}<br>
+    Dasar: QS. An-Nisa ayat 11
+    </p>
+    `;
+}
 
     let hasil = `
 
