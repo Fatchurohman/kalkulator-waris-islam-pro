@@ -21,6 +21,10 @@ const wasiat = Number(document.getElementById("wasiat").value);
     return; 
         const hartaBersih = harta - jenazah - utang - wasiat;
 }
+    if (hartaBersih <= 0) {
+    alert("Harta bersih tidak mencukupi untuk dibagikan.");
+    return;
+}
 
 if (!gender) {
     alert("Pilih jenis kelamin pewaris.");
@@ -82,7 +86,10 @@ if (!gender) {
 
     <p><strong>Harta Bersih:</strong><br>
     ${formatRupiah(hartaBersih)}</p>
-
+<p>
+<strong>Status Harta:</strong><br>
+Siap dihitung sebagai harta warisan.
+</p>
     <p><strong>Ahli Waris:</strong><br>
     ${ahliWaris.join(", ")}</p>
 
