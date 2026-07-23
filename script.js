@@ -35,8 +35,6 @@ function hitungWaris() {
     const anakPerempuan = Number(document.getElementById("anakPerempuan").value) || 0;
 
 
-    // VALIDASI
-
     if (nama === "") {
         alert("Nama pewaris harus diisi.");
         return;
@@ -55,81 +53,66 @@ function hitungWaris() {
 
     const hartaBersih = harta - jenazah - utang - wasiat;
 
-// ==============================
-// PERHITUNGAN BAGIAN PASANGAN
-// ==============================
 
-let hasilPembagian = "";
-
-const adaAnak = anakLaki > 0 || anakPerempuan > 0;
-
-
-// Pewaris laki-laki → istri
-if (gender.value === "L" && istri > 0) {
-
-    let bagianIstri;
-
-    if (adaAnak) {
-        bagianIstri = hartaBersih * 1 / 8;
-    } else {
-        bagianIstri = hartaBersih * 1 / 4;
-    }
-
-    hasilPembagian += `
-    <p>
-    <strong>Istri (${istri} orang)</strong><br>
-    Bagian: ${formatRupiah(bagianIstri)}<br>
-    Dasar: QS. An-Nisa ayat 12
-    </p>
-    `;
-}
-
-
-// Pewaris perempuan → suami
-if (gender.value === "P" && suami > 0) {
-
-    let bagianSuami;
-
-    if (adaAnak) {
-        bagianSuami = hartaBersih * 1 / 4;
-    } else {
-        bagianSuami = hartaBersih * 1 / 2;
-    }
-
-    hasilPembagian += `
-    <p>
-    <strong>Suami (${suami} orang)</strong><br>
-    Bagian: ${formatRupiah(bagianSuami)}<br>
-    Dasar: QS. An-Nisa ayat 12
-    </p>
-    `;
-}
     if (hartaBersih <= 0) {
         alert("Harta bersih tidak mencukupi.");
         return;
     }
 
 
-    let daftarAhliWaris = "";
+    // =====================
+    // HITUNG BAGIAN WARIS
+    // =====================
+
+    let hasilPembagian = "";
+
+    const adaAnak = anakLaki > 0 || anakPerempuan > 0;
 
 
-    if (suami > 0)
-        daftarAhliWaris += "Suami: " + suami + " orang<br>";
+    // PEWARIS LAKI-LAKI → ISTRI
 
-    if (istri > 0)
-        daftarAhliWaris += "Istri: " + istri + " orang<br>";
+    if (gender.value === "L" && istri > 0) {
 
-    if (ayah > 0)
-        daftarAhliWaris += "Ayah: " + ayah + " orang<br>";
+        let bagianIstri;
 
-    if (ibu > 0)
-        daftarAhliWaris += "Ibu: " + ibu + " orang<br>";
+        if (adaAnak) {
+            bagianIstri = hartaBersih * 1 / 8;
+        } else {
+            bagianIstri = hartaBersih * 1 / 4;
+        }
 
-    if (anakLaki > 0)
-        daftarAhliWaris += "Anak Laki-laki: " + anakLaki + " orang<br>";
 
-    if (anakPerempuan > 0)
-        daftarAhliWaris += "Anak Perempuan: " + anakPerempuan + " orang<br>";
+        hasilPembagian += `
+        <p>
+        <strong>Istri (${istri} orang)</strong><br>
+        Bagian: ${formatRupiah(bagianIstri)}<br>
+        Dasar: QS. An-Nisa ayat 12
+        </p>
+        `;
+    }
+
+
+    // PEWARIS PEREMPUAN → SUAMI
+
+    if (gender.value === "P" && suami > 0) {
+
+        let bagianSuami;
+
+        if (adaAnak) {
+            bagianSuami = hartaBersih * 1 / 4;
+        } else {
+            bagianSuami = hartaBersih * 1 / 2;
+        }
+
+
+        hasilPembagian += `
+        <p>
+        <strong>Suami (${suami} orang)</strong><br>
+        Bagian: ${formatRupiah(bagianSuami)}<br>
+        Dasar: QS. An-Nisa ayat 12
+        </p>
+        `;
+    }
 
 
 
@@ -147,9 +130,12 @@ if (gender.value === "P" && suami > 0) {
     ${gender.value === "L" ? "Laki-laki" : "Perempuan"}
     </p>
 
-
     <hr>
 
+    <p>
+    <strong>Total Harta:</strong><br>
+    ${formatRupiah(harta)}
+    </p>
 
     <p>
     <strong>Harta Bersih Warisan:</strong><br>
@@ -157,21 +143,15 @@ if (gender.value === "P" && suami > 0) {
     </p>
 
 
-    <p>
-    <strong>Ahli Waris:</strong><br>
-    ${daftarAhliWaris || "Belum ada data ahli waris"}
-    </p>
-
-<hr>
-
-<h3>⚖️ Hasil Pembagian</h3>
-
-${hasilPembagian || "Belum ada bagian yang dihitung"}
     <hr>
 
-    <p style="color:green;">
-    ✅ Data siap masuk tahap perhitungan faraidh.
-    </p>
+    <h3>⚖️ Hasil Pembagian</h3>
+
+    ${
+        hasilPembagian || 
+        "Belum ada bagian ahli waris yang dihitung."
+    }
+
 
     `;
 
