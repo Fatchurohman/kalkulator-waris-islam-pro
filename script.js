@@ -162,7 +162,11 @@ if (gender.value === "P" && suami > 0) {
     ${daftarAhliWaris || "Belum ada data ahli waris"}
     </p>
 
+<hr>
 
+<h3>⚖️ Hasil Pembagian</h3>
+
+${hasilPembagian || "Belum ada bagian yang dihitung"}
     <hr>
 
     <p style="color:green;">
