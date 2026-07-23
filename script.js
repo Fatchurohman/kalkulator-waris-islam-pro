@@ -16,22 +16,17 @@ function hitungWaris() {
     const harta = Number(document.getElementById("harta").value);
 
     const jenazah = Number(document.getElementById("jenazah").value) || 0;
-
     const utang = Number(document.getElementById("utang").value) || 0;
-
     const wasiat = Number(document.getElementById("wasiat").value) || 0;
 
 
     const suami = Number(document.getElementById("suami").value) || 0;
-
     const istri = Number(document.getElementById("istri").value) || 0;
 
     const ayah = Number(document.getElementById("ayah").value) || 0;
-
     const ibu = Number(document.getElementById("ibu").value) || 0;
 
     const anakLaki = Number(document.getElementById("anakLaki").value) || 0;
-
     const anakPerempuan = Number(document.getElementById("anakPerempuan").value) || 0;
 
 
@@ -60,16 +55,14 @@ function hitungWaris() {
     }
 
 
-    // =====================
-    // HITUNG BAGIAN WARIS
-    // =====================
-
     let hasilPembagian = "";
 
     const adaAnak = anakLaki > 0 || anakPerempuan > 0;
 
 
-    // PEWARIS LAKI-LAKI → ISTRI
+    // =====================
+    // ISTRI
+    // =====================
 
     if (gender.value === "L" && istri > 0) {
 
@@ -84,15 +77,17 @@ function hitungWaris() {
 
         hasilPembagian += `
         <p>
-        <strong>Istri (${istri} orang)</strong><br>
+        <strong>👩 Istri</strong><br>
         Bagian: ${formatRupiah(bagianIstri)}<br>
         Dasar: QS. An-Nisa ayat 12
-        </p>
-        `;
+        </p>`;
     }
 
 
-    // PEWARIS PEREMPUAN → SUAMI
+
+    // =====================
+    // SUAMI
+    // =====================
 
     if (gender.value === "P" && suami > 0) {
 
@@ -107,51 +102,58 @@ function hitungWaris() {
 
         hasilPembagian += `
         <p>
-        <strong>Suami (${suami} orang)</strong><br>
+        <strong>👨 Suami</strong><br>
         Bagian: ${formatRupiah(bagianSuami)}<br>
         Dasar: QS. An-Nisa ayat 12
-        </p>
-        `;
+        </p>`;
     }
 
-// =====================
-// HITUNG BAGIAN IBU
-// =====================
 
-if (ibu > 0) {
 
-    let bagianIbu;
+    // =====================
+    // IBU
+    // =====================
 
-    if (adaAnak) {
-        bagianIbu = hartaBersih * 1 / 6;
-    } else {
-        bagianIbu = hartaBersih * 1 / 3;
+    if (ibu > 0) {
+
+        let bagianIbu;
+
+        if (adaAnak) {
+            bagianIbu = hartaBersih * 1 / 6;
+        } else {
+            bagianIbu = hartaBersih * 1 / 3;
+        }
+
+
+        hasilPembagian += `
+        <p>
+        <strong>👩 Ibu</strong><br>
+        Bagian: ${formatRupiah(bagianIbu)}<br>
+        Dasar: QS. An-Nisa ayat 11
+        </p>`;
     }
 
-    hasilPembagian += `
-    <p>
-    <strong>👩 Ibu (${ibu} orang)</strong><br>
-    Bagian: ${formatRupiah(bagianIbu)}<br>
-    Dasar: QS. An-Nisa ayat 11
-    </p>
-    `;
-}
-// =====================
-// HITUNG BAGIAN AYAH
-// =====================
 
-if (ayah > 0 && adaAnak) {
 
-    let bagianAyah = hartaBersih * 1 / 6;
+    // =====================
+    // AYAH
+    // =====================
 
-    hasilPembagian += `
-    <p>
-    <strong>👨 Ayah (${ayah} orang)</strong><br>
-    Bagian: ${formatRupiah(bagianAyah)}<br>
-    Dasar: QS. An-Nisa ayat 11
-    </p>
-    `;
-}
+    if (ayah > 0 && adaAnak) {
+
+        let bagianAyah = hartaBersih * 1 / 6;
+
+
+        hasilPembagian += `
+        <p>
+        <strong>👨 Ayah</strong><br>
+        Bagian: ${formatRupiah(bagianAyah)}<br>
+        Dasar: QS. An-Nisa ayat 11
+        </p>`;
+    }
+
+
+
     let hasil = `
 
     <h3>📊 Data Perhitungan</h3>
@@ -169,25 +171,17 @@ if (ayah > 0 && adaAnak) {
     <hr>
 
     <p>
-    <strong>Total Harta:</strong><br>
-    ${formatRupiah(harta)}
-    </p>
-
-    <p>
     <strong>Harta Bersih Warisan:</strong><br>
     ${formatRupiah(hartaBersih)}
     </p>
-
 
     <hr>
 
     <h3>⚖️ Hasil Pembagian</h3>
 
     ${
-        hasilPembagian || 
-        "Belum ada bagian ahli waris yang dihitung."
+        hasilPembagian || "Belum ada bagian yang dihitung."
     }
-
 
     `;
 
@@ -195,3 +189,7 @@ if (ayah > 0 && adaAnak) {
     document.getElementById("hasil").innerHTML = hasil;
 
 }
+    
+
+
+    
