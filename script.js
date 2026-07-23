@@ -55,7 +55,55 @@ function hitungWaris() {
 
     const hartaBersih = harta - jenazah - utang - wasiat;
 
+// ==============================
+// PERHITUNGAN BAGIAN PASANGAN
+// ==============================
 
+let hasilPembagian = "";
+
+const adaAnak = anakLaki > 0 || anakPerempuan > 0;
+
+
+// Pewaris laki-laki → istri
+if (gender.value === "L" && istri > 0) {
+
+    let bagianIstri;
+
+    if (adaAnak) {
+        bagianIstri = hartaBersih * 1 / 8;
+    } else {
+        bagianIstri = hartaBersih * 1 / 4;
+    }
+
+    hasilPembagian += `
+    <p>
+    <strong>Istri (${istri} orang)</strong><br>
+    Bagian: ${formatRupiah(bagianIstri)}<br>
+    Dasar: QS. An-Nisa ayat 12
+    </p>
+    `;
+}
+
+
+// Pewaris perempuan → suami
+if (gender.value === "P" && suami > 0) {
+
+    let bagianSuami;
+
+    if (adaAnak) {
+        bagianSuami = hartaBersih * 1 / 4;
+    } else {
+        bagianSuami = hartaBersih * 1 / 2;
+    }
+
+    hasilPembagian += `
+    <p>
+    <strong>Suami (${suami} orang)</strong><br>
+    Bagian: ${formatRupiah(bagianSuami)}<br>
+    Dasar: QS. An-Nisa ayat 12
+    </p>
+    `;
+}
     if (hartaBersih <= 0) {
         alert("Harta bersih tidak mencukupi.");
         return;
