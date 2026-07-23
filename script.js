@@ -56,7 +56,7 @@ function hitungWaris() {
 
 
     let hasilPembagian = "";
-
+let daftarBagian = [];
     const adaAnak = anakLaki > 0 || anakPerempuan > 0;
 
 
