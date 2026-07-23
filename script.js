@@ -161,7 +161,32 @@ function hitungWaris() {
         `;
     }
 
+// =====================
+// ANAK PEREMPUAN
+// =====================
 
+if (anakPerempuan > 0 && anakLaki === 0) {
+
+    let bagianAnakPerempuan;
+    let pecahan;
+
+    if (anakPerempuan === 1) {
+        bagianAnakPerempuan = hartaBersih * 1 / 2;
+        pecahan = "1/2";
+    } else {
+        bagianAnakPerempuan = hartaBersih * 2 / 3;
+        pecahan = "2/3";
+    }
+
+    hasilPembagian += `
+    <p>
+    <strong>👧 Anak Perempuan (${anakPerempuan})</strong><br>
+    Bagian: ${pecahan}<br>
+    Nilai: ${formatRupiah(bagianAnakPerempuan)}<br>
+    Dasar: QS. An-Nisa ayat 11
+    </p>
+    `;
+}
 
     let hasil = `
 
