@@ -76,10 +76,10 @@ function hitungWaris() {
 
 
         hasilPembagian += `
-        <p>
-        <strong>👩 Istri</strong><br>
-        Bagian: ${formatRupiah(bagianIstri)}<br>
-        Dasar: QS. An-Nisa ayat 12
+        <p><strong>👩 Istri</strong><br>
+Bagian: ${adaAnak ? "1/8" : "1/4"}<br>
+Nilai: ${formatRupiah(bagianIstri)}<br>
+Dasar: QS. An-Nisa ayat 12
         </p>`;
     }
 
@@ -102,10 +102,10 @@ function hitungWaris() {
 
         hasilPembagian += `
         <p>
-        <strong>👨 Suami</strong><br>
-        Bagian: ${formatRupiah(bagianSuami)}<br>
-        Dasar: QS. An-Nisa ayat 12
-        </p>`;
+        <<strong>👨 Suami</strong><br>
+Bagian: ${adaAnak ? "1/4" : "1/2"}<br>
+Nilai: ${formatRupiah(bagianSuami)}<br>
+Dasar: QS. An-Nisa ayat 12
     }
 
 
@@ -127,10 +127,10 @@ function hitungWaris() {
 
         hasilPembagian += `
         <p>
-        <strong>👩 Ibu</strong><br>
-        Bagian: ${formatRupiah(bagianIbu)}<br>
-        Dasar: QS. An-Nisa ayat 11
-        </p>`;
+        <<strong>👩 Ibu</strong><br>
+Bagian: ${adaAnak ? "1/6" : "1/3"}<br>
+Nilai: ${formatRupiah(bagianIbu)}<br>
+Dasar: QS. An-Nisa ayat 11
     }
 
 
@@ -147,9 +147,9 @@ function hitungWaris() {
         hasilPembagian += `
         <p>
         <strong>👨 Ayah</strong><br>
-        Bagian: ${formatRupiah(bagianAyah)}<br>
-        Dasar: QS. An-Nisa ayat 11
-        </p>`;
+Bagian: 1/6<br>
+Nilai: ${formatRupiah(bagianAyah)}<br>
+Dasar: QS. An-Nisa ayat 11
     }
 
 
