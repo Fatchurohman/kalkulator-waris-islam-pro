@@ -41,7 +41,7 @@ function hitungWaris() {
     }
 
     if (harta <= 0) {
-        alert("Masukkan jumlah harta.");
+        alert("Masukkan total harta.");
         return;
     }
 
@@ -60,6 +60,7 @@ function hitungWaris() {
     const adaAnak = anakLaki > 0 || anakPerempuan > 0;
 
 
+
     // =====================
     // ISTRI
     // =====================
@@ -76,11 +77,13 @@ function hitungWaris() {
 
 
         hasilPembagian += `
-        <p><strong>👩 Istri</strong><br>
-Bagian: ${adaAnak ? "1/8" : "1/4"}<br>
-Nilai: ${formatRupiah(bagianIstri)}<br>
-Dasar: QS. An-Nisa ayat 12
-        </p>`;
+        <p>
+        <strong>👩 Istri</strong><br>
+        Bagian: ${adaAnak ? "1/8" : "1/4"}<br>
+        Nilai: ${formatRupiah(bagianIstri)}<br>
+        Dasar: QS. An-Nisa ayat 12
+        </p>
+        `;
     }
 
 
@@ -102,10 +105,12 @@ Dasar: QS. An-Nisa ayat 12
 
         hasilPembagian += `
         <p>
-        <<strong>👨 Suami</strong><br>
-Bagian: ${adaAnak ? "1/4" : "1/2"}<br>
-Nilai: ${formatRupiah(bagianSuami)}<br>
-Dasar: QS. An-Nisa ayat 12
+        <strong>👨 Suami</strong><br>
+        Bagian: ${adaAnak ? "1/4" : "1/2"}<br>
+        Nilai: ${formatRupiah(bagianSuami)}<br>
+        Dasar: QS. An-Nisa ayat 12
+        </p>
+        `;
     }
 
 
@@ -127,10 +132,12 @@ Dasar: QS. An-Nisa ayat 12
 
         hasilPembagian += `
         <p>
-        <<strong>👩 Ibu</strong><br>
-Bagian: ${adaAnak ? "1/6" : "1/3"}<br>
-Nilai: ${formatRupiah(bagianIbu)}<br>
-Dasar: QS. An-Nisa ayat 11
+        <strong>👩 Ibu</strong><br>
+        Bagian: ${adaAnak ? "1/6" : "1/3"}<br>
+        Nilai: ${formatRupiah(bagianIbu)}<br>
+        Dasar: QS. An-Nisa ayat 11
+        </p>
+        `;
     }
 
 
@@ -147,9 +154,11 @@ Dasar: QS. An-Nisa ayat 11
         hasilPembagian += `
         <p>
         <strong>👨 Ayah</strong><br>
-Bagian: 1/6<br>
-Nilai: ${formatRupiah(bagianAyah)}<br>
-Dasar: QS. An-Nisa ayat 11
+        Bagian: 1/6<br>
+        Nilai: ${formatRupiah(bagianAyah)}<br>
+        Dasar: QS. An-Nisa ayat 11
+        </p>
+        `;
     }
 
 
@@ -171,7 +180,7 @@ Dasar: QS. An-Nisa ayat 11
     <hr>
 
     <p>
-    <strong>Harta Bersih Warisan:</strong><br>
+    <strong>Harta Bersih:</strong><br>
     ${formatRupiah(hartaBersih)}
     </p>
 
@@ -179,9 +188,7 @@ Dasar: QS. An-Nisa ayat 11
 
     <h3>⚖️ Hasil Pembagian</h3>
 
-    ${
-        hasilPembagian || "Belum ada bagian yang dihitung."
-    }
+    ${hasilPembagian || "Belum ada ahli waris yang dihitung."}
 
     `;
 
@@ -189,7 +196,6 @@ Dasar: QS. An-Nisa ayat 11
     document.getElementById("hasil").innerHTML = hasil;
 
 }
-    
 
 
     
