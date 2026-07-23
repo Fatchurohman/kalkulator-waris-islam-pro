@@ -7,6 +7,15 @@ function formatRupiah(angka) {
 }
 
 function hitungWaris() {
+    const nama = document.getElementById("namaPewaris").value.trim();
+
+const gender = document.querySelector('input[name="gender"]:checked');
+
+const jenazah = Number(document.getElementById("jenazah").value);
+
+const utang = Number(document.getElementById("utang").value);
+
+const wasiat = Number(document.getElementById("wasiat").value);
 
     const harta = Number(document.getElementById("harta").value);
 
