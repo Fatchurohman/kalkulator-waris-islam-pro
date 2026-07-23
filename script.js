@@ -75,7 +75,11 @@ let daftarBagian = [];
             bagianIstri = hartaBersih * 1 / 4;
         }
 
-
+daftarBagian.push({
+    nama: "Istri",
+    pembilang: 1,
+    penyebut: adaAnak ? 8 : 4
+});
         hasilPembagian += `
         <p>
         <strong>👩 Istri</strong><br>
