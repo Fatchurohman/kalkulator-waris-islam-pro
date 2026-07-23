@@ -16,6 +16,15 @@ const jenazah = Number(document.getElementById("jenazah").value);
 const utang = Number(document.getElementById("utang").value);
 
 const wasiat = Number(document.getElementById("wasiat").value);
+    if (nama === "") {
+    alert("Nama pewaris harus diisi.");
+    return;
+}
+
+if (!gender) {
+    alert("Pilih jenis kelamin pewaris.");
+    return;
+}
 
     const harta = Number(document.getElementById("harta").value);
 
