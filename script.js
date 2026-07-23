@@ -136,7 +136,22 @@ if (ibu > 0) {
     </p>
     `;
 }
+// =====================
+// HITUNG BAGIAN AYAH
+// =====================
 
+if (ayah > 0 && adaAnak) {
+
+    let bagianAyah = hartaBersih * 1 / 6;
+
+    hasilPembagian += `
+    <p>
+    <strong>👨 Ayah (${ayah} orang)</strong><br>
+    Bagian: ${formatRupiah(bagianAyah)}<br>
+    Dasar: QS. An-Nisa ayat 11
+    </p>
+    `;
+}
     let hasil = `
 
     <h3>📊 Data Perhitungan</h3>
