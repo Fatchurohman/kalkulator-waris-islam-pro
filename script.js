@@ -1,5 +1,14 @@
+function formatRupiah(angka) {
+    return new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        maximumFractionDigits: 0
+    }).format(angka);
+}
+
+
 // =====================
-// FUNGSI FPB DAN KPK
+// FPB & KPK
 // =====================
 
 function fpb(a, b) {
@@ -17,291 +26,318 @@ function kpk(a, b) {
 }
 
 
-// Mencari asal masalah dari semua penyebut
-
-function cariAsalMasalah(daftar) {
+function cariAsalMasalah(data) {
 
     let hasil = 1;
 
-    daftar.forEach(item => {
+    data.forEach(item => {
         hasil = kpk(hasil, item.penyebut);
     });
 
     return hasil;
 }
 
-// =====================
-// KONVERSI KE ASAL MASALAH
-// =====================
-
-function ubahKeAsalMasalah(daftar, asalMasalah) {
-
-    return daftar.map(item => {
-
-        let bagian = (asalMasalah / item.penyebut) * item.pembilang;
-
-        return {
-            nama: item.nama,
-            bagian: bagian,
-            total: asalMasalah
-        };
-
-    });
-
-}
-function formatRupiah(angka) {
-    return new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        maximumFractionDigits: 0
-    }).format(angka);
-}
 
 
 function hitungWaris() {
 
-    const nama = document.getElementById("namaPewaris").value.trim();
 
-    const gender = document.querySelector('input[name="gender"]:checked');
+    const nama = document.getElementById("namaPewaris").value;
 
-    const harta = Number(document.getElementById("harta").value);
-
-    const jenazah = Number(document.getElementById("jenazah").value) || 0;
-    const utang = Number(document.getElementById("utang").value) || 0;
-    const wasiat = Number(document.getElementById("wasiat").value) || 0;
+    const gender = document.querySelector(
+        'input[name="gender"]:checked'
+    );
 
 
-    const suami = Number(document.getElementById("suami").value) || 0;
-    const istri = Number(document.getElementById("istri").value) || 0;
-
-    const ayah = Number(document.getElementById("ayah").value) || 0;
-    const ibu = Number(document.getElementById("ibu").value) || 0;
-
-    const anakLaki = Number(document.getElementById("anakLaki").value) || 0;
-    const anakPerempuan = Number(document.getElementById("anakPerempuan").value) || 0;
+    const harta = Number(
+        document.getElementById("harta").value
+    );
 
 
-    if (nama === "") {
-        alert("Nama pewaris harus diisi.");
+    const jenazah = Number(
+        document.getElementById("jenazah").value
+    ) || 0;
+
+
+    const utang = Number(
+        document.getElementById("utang").value
+    ) || 0;
+
+
+    const wasiat = Number(
+        document.getElementById("wasiat").value
+    ) || 0;
+
+
+
+    const suami =
+        document.getElementById("suami").checked;
+
+    const istri =
+        document.getElementById("istri").checked;
+
+    const ayah =
+        document.getElementById("ayah").checked;
+
+    const ibu =
+        document.getElementById("ibu").checked;
+
+    const anakLaki =
+        document.getElementById("anakLaki").checked;
+
+    const anakPerempuan =
+        document.getElementById("anakPerempuan").checked;
+
+
+
+    if (!nama || !gender) {
+        alert("Lengkapi data pewaris");
         return;
     }
 
-    if (!gender) {
-        alert("Pilih jenis kelamin pewaris.");
-        return;
-    }
 
     if (harta <= 0) {
-        alert("Masukkan total harta.");
+        alert("Masukkan total harta");
         return;
     }
 
 
-    const hartaBersih = harta - jenazah - utang - wasiat;
 
+    const hartaBersih =
+        harta - jenazah - utang - wasiat;
 
-    if (hartaBersih <= 0) {
-        alert("Harta bersih tidak mencukupi.");
-        return;
-    }
 
 
     let hasilPembagian = "";
-let daftarBagian = [];
-    const adaAnak = anakLaki > 0 || anakPerempuan > 0;
+
+    let daftarBagian = [];
 
 
 
-    // =====================
-    // ISTRI
-    // =====================
-
-    if (gender.value === "L" && istri > 0) {
-
-        let bagianIstri;
-
-        if (adaAnak) {
-            bagianIstri = hartaBersih * 1 / 8;
-        } else {
-            bagianIstri = hartaBersih * 1 / 4;
-        }
-
-daftarBagian.push({
-    nama: "Istri",
-    pembilang: 1,
-    penyebut: adaAnak ? 8 : 4
-});
-        hasilPembagian += `
-        <p>
-        <strong>👩 Istri</strong><br>
-        Bagian: ${adaAnak ? "1/8" : "1/4"}<br>
-        Nilai: ${formatRupiah(bagianIstri)}<br>
-        Dasar: QS. An-Nisa ayat 12
-        </p>
-        `;
-    }
+    const adaAnak =
+        anakLaki || anakPerempuan;
 
 
 
-    // =====================
-    // SUAMI
-    // =====================
+// =====================
+// ISTRI
+// =====================
 
-    if (gender.value === "P" && suami > 0) {
-
-        let bagianSuami;
-
-        if (adaAnak) {
-            bagianSuami = hartaBersih * 1 / 4;
-        } else {
-            bagianSuami = hartaBersih * 1 / 2;
-        }
+if (istri && gender.value === "L") {
 
 
-        hasilPembagian += `
-        <p>
-        <strong>👨 Suami</strong><br>
-        Bagian: ${adaAnak ? "1/4" : "1/2"}<br>
-        Nilai: ${formatRupiah(bagianSuami)}<br>
-        Dasar: QS. An-Nisa ayat 12
-        </p>
-        `;
-    }
+    let pecahan =
+        adaAnak ? "1/8" : "1/4";
+
+
+    let nilai =
+        adaAnak ?
+        hartaBersih / 8 :
+        hartaBersih / 4;
 
 
 
-    // =====================
-    // IBU
-    // =====================
-
-    if (ibu > 0) {
-
-        let bagianIbu;
-
-        if (adaAnak) {
-            bagianIbu = hartaBersih * 1 / 6;
-        } else {
-            bagianIbu = hartaBersih * 1 / 3;
-        }
-
-daftarBagian.push({
-    nama: "Ibu",
-    pembilang: 1,
-    penyebut: adaAnak ? 6 : 3
-});
-        hasilPembagian += `
-        <p>
-        <strong>👩 Ibu</strong><br>
-        Bagian: ${adaAnak ? "1/6" : "1/3"}<br>
-        Nilai: ${formatRupiah(bagianIbu)}<br>
-        Dasar: QS. An-Nisa ayat 11
-        </p>
-        `;
-    }
+    daftarBagian.push({
+        nama:"Istri",
+        pembilang:1,
+        penyebut:adaAnak ? 8 : 4
+    });
 
 
 
-    // =====================
-    // AYAH
-    // =====================
+    hasilPembagian += `
+    <p>
+    <strong>👩 Istri</strong><br>
+    Bagian: ${pecahan}<br>
+    Nilai: ${formatRupiah(nilai)}
+    </p>
+    `;
+}
 
-    if (ayah > 0 && adaAnak) {
 
-        let bagianAyah = hartaBersih * 1 / 6;
+
+// =====================
+// IBU
+// =====================
+
+if (ibu) {
+
+
+    let pecahan =
+    adaAnak ? "1/6" : "1/3";
+
+
+    let nilai =
+    adaAnak ?
+    hartaBersih / 6 :
+    hartaBersih / 3;
+
+
+
+    daftarBagian.push({
+        nama:"Ibu",
+        pembilang:1,
+        penyebut:adaAnak ? 6 : 3
+    });
+
+
+
+    hasilPembagian += `
+    <p>
+    <strong>👩 Ibu</strong><br>
+    Bagian: ${pecahan}<br>
+    Nilai: ${formatRupiah(nilai)}
+    </p>
+    `;
+}
+
+
 
 // =====================
 // AYAH
 // =====================
-        hasilPembagian += `
-        <p>
-        <strong>👨 Ayah</strong><br>
-        Bagian: 1/6<br>
-        Nilai: ${formatRupiah(bagianAyah)}<br>
-        Dasar: QS. An-Nisa ayat 11
-        </p>
-        `;
-    }
+
+if (ayah && adaAnak) {
+
+
+    let nilai =
+    hartaBersih / 6;
+
+
+
+    daftarBagian.push({
+        nama:"Ayah",
+        pembilang:1,
+        penyebut:6
+    });
+
+
+
+    hasilPembagian += `
+    <p>
+    <strong>👨 Ayah</strong><br>
+    Bagian: 1/6<br>
+    Nilai: ${formatRupiah(nilai)}
+    </p>
+    `;
+}
+
+
 
 // =====================
 // ANAK PEREMPUAN
 // =====================
 
-if (anakPerempuan > 0 && anakLaki === 0) {
+if (anakPerempuan && !anakLaki) {
 
-    let bagianAnakPerempuan;
-    let pecahan;
 
-    if (anakPerempuan === 1) {
-        bagianAnakPerempuan = hartaBersih * 1 / 2;
-        pecahan = "1/2";
-    } else {
-        bagianAnakPerempuan = hartaBersih * 2 / 3;
-        pecahan = "2/3";
-    }
-daftarBagian.push({
-    nama: "Anak Perempuan",
-    pembilang: anakPerempuan === 1 ? 1 : 2,
-    penyebut: anakPerempuan === 1 ? 2 : 3
-});
+    let pecahan =
+    "1/2";
+
+
+    let nilai =
+    hartaBersih / 2;
+
+
+
+    daftarBagian.push({
+        nama:"Anak Perempuan",
+        pembilang:1,
+        penyebut:2
+    });
+
+
+
     hasilPembagian += `
     <p>
-    <strong>👧 Anak Perempuan (${anakPerempuan})</strong><br>
+    <strong>👧 Anak Perempuan</strong><br>
     Bagian: ${pecahan}<br>
-    Nilai: ${formatRupiah(bagianAnakPerempuan)}<br>
-    Dasar: QS. An-Nisa ayat 11
+    Nilai: ${formatRupiah(nilai)}
     </p>
     `;
 }
 
-    let hasil = `
 
-    <h3>📊 Data Perhitungan</h3>
 
-    <p>
-    <strong>Pewaris:</strong><br>
-    ${nama}
-    </p>
+// =====================
+// ASAL MASALAH
+// =====================
 
-    <p>
-    <strong>Jenis Kelamin:</strong><br>
-    ${gender.value === "L" ? "Laki-laki" : "Perempuan"}
-    </p>
+let asalMasalah =
+cariAsalMasalah(daftarBagian);
 
-    <hr>
 
-    <p>
-    <strong>Harta Bersih:</strong><br>
-    ${formatRupiah(hartaBersih)}
-    </p>
 
-    <hr>
+let hasilAsal = "";
 
-    <h3>⚖️ Hasil Pembagian</h3>
 
-    ${hasilPembagian || "Belum ada ahli waris yang dihitung."}
+daftarBagian.forEach(item=>{
+
+let bagian =
+(asalMasalah / item.penyebut)
+*
+item.pembilang;
+
+
+hasilAsal += `
+
+<p>
+<strong>${item.nama}</strong><br>
+Bagian: ${bagian}/${asalMasalah}
+</p>
+
+`;
+
+});
+
+
+
+// =====================
+// HASIL AKHIR
+// =====================
+
+let hasil = `
+
+<h3>📊 Data Perhitungan</h3>
+
+<p>
+<strong>Pewaris:</strong><br>
+${nama}
+</p>
+
+<p>
+<strong>Harta Bersih:</strong><br>
+${formatRupiah(hartaBersih)}
+</p>
+
+
 <hr>
 
-    `;
+<h3>⚖️ Hasil Pembagian</h3>
 
-let asalMasalah = cariAsalMasalah(daftarBagian);
-let hasilAsalMasalah = ubahKeAsalMasalah(
-    daftarBagian,
-    asalMasalah
-);
-hasil += `
+${hasilPembagian}
+
 
 <hr>
 
 <h3>📐 Asal Masalah</h3>
 
 <p>
-Penyebut bersama: <strong>${asalMasalah}</strong>
+Penyebut Bersama:
+<strong>${asalMasalah}</strong>
 </p>
 
+${hasilAsal}
+
 `;
-    document.getElementById("hasil").innerHTML = hasil;
+
+
+
+document.getElementById("hasil").innerHTML = hasil;
+
 
 }
 
+    
 
     
