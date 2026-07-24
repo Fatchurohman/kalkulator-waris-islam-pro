@@ -207,55 +207,21 @@ if (ayah > 0 && adaAnak) {
 }
 
 // =====================
-// ANAK LAKI-LAKI
+// ANAK LAKI-LAKI + ANAK PEREMPUAN (ASHABAH)
 // =====================
 
-if (anakLaki > 0) {
+if (anakLaki > 0 || anakPerempuan > 0) {
 
     daftarBagian.push({
 
-        nama:"Anak Laki-laki",
-        pembilang:0,
-        penyebut:1,
-        jenis:"ashabah"
+        nama: "Anak-anak",
+        pembilang: 0,
+        penyebut: 1,
+        jenis: "ashabah"
 
     });
 
 }
-
-// =====================
-// ANAK PEREMPUAN
-// =====================
-
-if (anakPerempuan > 0) {
-
-
-    if (anakPerempuan === 1) {
-
-        daftarBagian.push({
-
-            nama: "Anak Perempuan",
-            pembilang: 1,
-            penyebut: 2
-
-        });
-
-
-    } else {
-
-
-        daftarBagian.push({
-
-            nama: "Anak Perempuan",
-            pembilang: 2,
-            penyebut: 3
-
-        });
-
-    }
-
-}
-
 
 
 
