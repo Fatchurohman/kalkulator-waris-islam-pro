@@ -283,7 +283,10 @@ daftarBagian.push({
     `;
 
 let asalMasalah = cariAsalMasalah(daftarBagian);
-
+let hasilAsalMasalah = ubahKeAsalMasalah(
+    daftarBagian,
+    asalMasalah
+);
 hasil += `
 
 <hr>
