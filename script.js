@@ -29,6 +29,26 @@ function cariAsalMasalah(daftar) {
 
     return hasil;
 }
+
+// =====================
+// KONVERSI KE ASAL MASALAH
+// =====================
+
+function ubahKeAsalMasalah(daftar, asalMasalah) {
+
+    return daftar.map(item => {
+
+        let bagian = (asalMasalah / item.penyebut) * item.pembilang;
+
+        return {
+            nama: item.nama,
+            bagian: bagian,
+            total: asalMasalah
+        };
+
+    });
+
+}
 function formatRupiah(angka) {
     return new Intl.NumberFormat("id-ID", {
         style: "currency",
