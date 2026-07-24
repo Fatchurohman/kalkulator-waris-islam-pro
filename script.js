@@ -214,22 +214,8 @@ if (anakLaki > 0) {
 
         nama:"Anak Laki-laki",
         pembilang:0,
-        penyebut:1
-
-    });
-
-}
-// =====================
-// ANAK LAKI-LAKI
-// =====================
-
-if (anakLaki > 0) {
-
-    daftarBagian.push({
-
-        nama:"Anak Laki-laki",
-        pembilang:0,
-        penyebut:1
+        penyebut:1,
+        jenis:"ashabah"
 
     });
 
