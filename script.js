@@ -357,20 +357,19 @@ cariAsalMasalah(daftarBagian);
 
 
 
-let hasilAsal = "";
-
+let dataAsal = [];
 
 daftarBagian.forEach(item => {
 
-
     let bagian =
-    (asalMasalah / item.penyebut)
-    *
-    item.pembilang;
+    (asalMasalah / item.penyebut) * item.pembilang;
 
+    dataAsal.push({
+        nama: item.nama,
+        saham: bagian
+    });
 
-
-    hasilAsal += `
+});
 
     <p>
 
