@@ -225,7 +225,7 @@ if (anakLaki > 0) {
 // ANAK PEREMPUAN
 // =====================
 
-if (anakPerempuan > 0 && anakLaki === 0) {
+if (anakPerempuan > 0) {
 
 
     if (anakPerempuan === 1) {
