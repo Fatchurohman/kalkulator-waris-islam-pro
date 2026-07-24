@@ -296,29 +296,51 @@ dataAsal.forEach(item => {
 });
 
 
-
 let sisaSaham =
 asalMasalah - totalSaham;
 
 
 
+// Prioritas 'Ashabah
+// 1. Anak laki-laki
+// 2. Ayah
+
+
 if (sisaSaham > 0) {
 
 
-    let ayahData =
+    let anakLakiData =
     dataAsal.find(
-        item => item.nama === "Ayah"
+        item => item.nama === "Anak Laki-laki"
     );
 
 
-    if (ayahData) {
+    if (anakLakiData) {
 
-        ayahData.saham += sisaSaham;
+
+        anakLakiData.saham += sisaSaham;
+
+
+    } else {
+
+
+        let ayahData =
+        dataAsal.find(
+            item => item.nama === "Ayah"
+        );
+
+
+        if (ayahData) {
+
+            ayahData.saham += sisaSaham;
+
+        }
+
 
     }
 
-
 }
+
 
 
 
