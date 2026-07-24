@@ -262,7 +262,19 @@ daftarBagian.push({
 
     `;
 
+let asalMasalah = cariAsalMasalah(daftarBagian);
 
+hasil += `
+
+<hr>
+
+<h3>📐 Asal Masalah</h3>
+
+<p>
+Penyebut bersama: <strong>${asalMasalah}</strong>
+</p>
+
+`;
     document.getElementById("hasil").innerHTML = hasil;
 
 }
