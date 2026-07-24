@@ -281,14 +281,6 @@ daftarBagian.push({
     ${hasilPembagian || "Belum ada ahli waris yang dihitung."}
 <hr>
 
-<h3>⚖️ Pembagian Asal Masalah</h3>
-
-${hasilAsalMasalah.map(item => `
-<p>
-<strong>${item.nama}</strong><br>
-Bagian: ${item.bagian}/${item.total}
-</p>
-`).join("")}
     `;
 
 let asalMasalah = cariAsalMasalah(daftarBagian);
