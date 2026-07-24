@@ -135,7 +135,6 @@ function hitungWaris() {
     const hartaBersih =
     harta - jenazah - utang - wasiat;
 
-console.log("Script berjalan");
     
     let daftarBagian = [];
 
