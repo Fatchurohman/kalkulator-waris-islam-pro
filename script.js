@@ -60,6 +60,8 @@ function cariAsalMasalah(data) {
 
 function hitungWaris() {
 
+alert("Fungsi jalan");
+
     const nama =
     document.getElementById("namaPewaris").value;
 
