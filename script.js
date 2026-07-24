@@ -373,15 +373,16 @@ daftarBagian.forEach(item => {
 
     <p>
 
-    <strong>${item.nama}</strong><br>
+    let hasilAsal = "";
 
-    Bagian:
-    ${bagian}/${asalMasalah}
+dataAsal.forEach(item => {
 
+    hasilAsal += `
+    <p>
+        <strong>${item.nama}</strong><br>
+        Bagian: ${item.saham}/${asalMasalah}
     </p>
-
     `;
-
 
 });
 
