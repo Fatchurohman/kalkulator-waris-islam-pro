@@ -385,7 +385,32 @@ daftarBagian.forEach(item => {
 
 });
 
+// =====================
+// HITUNG SISA ('ASHABAH)
+// =====================
 
+let totalSaham = 0;
+
+dataAsal.forEach(item => {
+    totalSaham += item.saham;
+});
+
+let sisaSaham = asalMasalah - totalSaham;
+
+// Jika ada sisa dan ada ayah,
+// ayah mendapat sisa sebagai 'ashabah.
+
+if (sisaSaham > 0) {
+
+    let ayahData = dataAsal.find(
+        item => item.nama === "Ayah"
+    );
+
+    if (ayahData) {
+        ayahData.saham += sisaSaham;
+    }
+
+}
 
 
 
