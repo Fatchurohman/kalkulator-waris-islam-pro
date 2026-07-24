@@ -133,7 +133,11 @@ daftarBagian.push({
             bagianIbu = hartaBersih * 1 / 3;
         }
 
-
+daftarBagian.push({
+    nama: "Ibu",
+    pembilang: 1,
+    penyebut: adaAnak ? 6 : 3
+});
         hasilPembagian += `
         <p>
         <strong>👩 Ibu</strong><br>
