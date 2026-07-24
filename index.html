@@ -1,126 +1,265 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Kalkulator Waris Islam Pro</title>
 
 <link rel="stylesheet" href="style.css">
+
 </head>
+
 
 <body>
 
+
 <div class="container">
 
-    <header>
-        <h1>⚖️ Kalkulator Waris Islam Pro</h1>
-        <h2>Madzhab Syafi'i</h2>
-        <p>
-            Perhitungan pembagian warisan berdasarkan kaidah ilmu faraidh.
-        </p>
-    </header>
 
-    <hr>
+<header>
 
-    <section class="card">
+<h1>⚖️ Kalkulator Waris Islam Pro</h1>
+
+<h2>Madzhab Syafi'i</h2>
+
+<p>
+Perhitungan pembagian warisan berdasarkan kaidah ilmu faraidh.
+</p>
+
+</header>
+
+
+<hr>
+
+
+<section class="card">
+
 
 <h3>📜 Data Pewaris</h3>
 
-<label>Nama Pewaris</label>
-<input type="text" id="namaPewaris" placeholder="Masukkan nama pewaris">
-
-<label>Jenis Kelamin Pewaris</label>
 
 <label>
-<input type="radio" name="gender" id="laki" value="L">
+Nama Pewaris
+</label>
+
+<input 
+type="text" 
+id="namaPewaris"
+placeholder="Masukkan nama pewaris">
+
+
+<label>
+Jenis Kelamin Pewaris
+</label>
+
+
+<label>
+<input 
+type="radio" 
+name="gender" 
+id="laki" 
+value="L">
+
 Laki-laki
 </label>
 
+
 <label>
-<input type="radio" name="gender" id="perempuan" value="P">
+<input 
+type="radio" 
+name="gender" 
+id="perempuan" 
+value="P">
+
 Perempuan
 </label>
 
-<label>Total Harta (Rp)</label>
-<input type="number" id="harta" placeholder="Masukkan total harta">
 
-<label>Biaya Pengurusan Jenazah (Rp)</label>
-<input type="number" id="jenazah" value="0">
 
-<label>Total Utang (Rp)</label>
-<input type="number" id="utang" value="0">
+<label>
+Total Harta (Rp)
+</label>
 
-<label>Nilai Wasiat (Rp)</label>
-<input type="number" id="wasiat" value="0">
+<input 
+type="number" 
+id="harta"
+placeholder="Masukkan total harta">
 
-    </section>
+
+<label>
+Biaya Pengurusan Jenazah (Rp)
+</label>
+
+<input 
+type="number" 
+id="jenazah"
+value="0">
+
+
+<label>
+Total Utang (Rp)
+</label>
+
+<input 
+type="number" 
+id="utang"
+value="0">
+
+
+<label>
+Nilai Wasiat (Rp)
+</label>
+
+<input 
+type="number" 
+id="wasiat"
+value="0">
+
+
+</section>
+
+
+
+
+<section class="card">
+
 
 <h3>👨‍👩‍👧 Data Ahli Waris</h3>
+
 
 <label>
 Jumlah Suami
 </label>
-<input type="number" id="suami" value="0" min="0">
+
+<input 
+type="number"
+id="suami"
+value="0"
+min="0">
+
+
 
 <label>
 Jumlah Istri
 </label>
-<input type="number" id="istri" value="0" min="0">
+
+<input 
+type="number"
+id="istri"
+value="0"
+min="0">
+
+
 
 <label>
 Jumlah Ayah
 </label>
-<input type="number" id="ayah" value="0" min="0">
+
+<input 
+type="number"
+id="ayah"
+value="0"
+min="0">
+
+
 
 <label>
 Jumlah Ibu
 </label>
-<input type="number" id="ibu" value="0" min="0">
+
+<input 
+type="number"
+id="ibu"
+value="0"
+min="0">
+
+
 
 <label>
 Jumlah Anak Laki-laki
 </label>
-<input type="number" id="anakLaki" value="0" min="0">
+
+<input 
+type="number"
+id="anakLaki"
+value="0"
+min="0">
+
+
 
 <label>
 Jumlah Anak Perempuan
 </label>
-<input type="number" id="anakPerempuan" value="0" min="0">
-    </section>
+
+<input 
+type="number"
+id="anakPerempuan"
+value="0"
+min="0">
 
 
-    <button onclick="hitungWaris()">
-        ⚖️ Hitung Waris
-    </button>
+
+</section>
 
 
-    <section class="card hasil">
-
-        <h3>📊 Hasil Perhitungan</h3>
-
-        <div id="hasil">
-            Hasil akan tampil di sini.
-        </div>
-
-    </section>
 
 
-    <footer>
+<button onclick="hitungWaris()">
 
-        <p>
-        Berdasarkan kaidah ilmu faraidh<br>
-        Developed by <strong>Fatur Sky</strong>
-        </p>
+⚖️ Hitung Waris
 
-    </footer>
+</button>
+
+
+
+
+<section class="card hasil">
+
+
+<h3>📊 Hasil Perhitungan</h3>
+
+
+<div id="hasil">
+
+Hasil akan tampil di sini.
+
+</div>
+
+
+</section>
+
+
+
+
+<footer>
+
+<p>
+
+Berdasarkan kaidah ilmu faraidh
+<br>
+
+Developed by 
+<strong>Fatur Sky</strong>
+
+</p>
+
+</footer>
+
 
 
 </div>
 
 
+
 <script src="dalil.js"></script>
+
 <script src="script.js"></script>
 
+
 </body>
+
 </html>
+        
