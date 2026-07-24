@@ -291,8 +291,8 @@ if (sisaSaham > 0) {
 
 
     let anakLakiData =
-    dataAsal.find(
-        item => item.nama === "Anak Laki-laki"
+    dataAsal.find(item.nama === "Anak-anak"
+                  item => item.nama === "Anak Laki-laki"
     );
 
 
