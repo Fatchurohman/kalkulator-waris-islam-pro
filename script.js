@@ -270,23 +270,20 @@ cariAsalMasalah(daftarBagian);
 
 let hasilAsal = "";
 
+daftarBagian.forEach(item => {
 
-daftarBagian.forEach(item=>{
-
-let bagian =
-(asalMasalah / item.penyebut)
-*
-item.pembilang;
+    let bagian =
+    (asalMasalah / item.penyebut) * item.pembilang;
 
 
-hasilAsal += `
+    hasilAsal += `
 
-<p>
-<strong>${item.nama}</strong><br>
-Bagian: ${bagian}/${asalMasalah}
-</p>
+    <p>
+    <strong>${item.nama}</strong><br>
+    Bagian: ${bagian}/${asalMasalah}
+    </p>
 
-`;
+    `;
 
 });
 
