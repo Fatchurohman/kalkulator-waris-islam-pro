@@ -369,9 +369,6 @@ daftarBagian.forEach(item => {
         saham: bagian
     });
 
-});
-
-
     let hasilAsal = "";
 
 dataAsal.forEach(item => {
