@@ -1,4 +1,4 @@
-jifunction formatRupiah(angka) {
+function formatRupiah(angka) {
 
     return new Intl.NumberFormat("id-ID", {
         style: "currency",
