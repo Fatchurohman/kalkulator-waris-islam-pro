@@ -71,22 +71,22 @@ function hitungWaris() {
 
 
     const suami =
-        document.getElementById("suami").checked;
+Number(document.getElementById("suami").value);
 
-    const istri =
-        document.getElementById("istri").checked;
+const istri =
+Number(document.getElementById("istri").value);
 
-    const ayah =
-        document.getElementById("ayah").checked;
+const ayah =
+Number(document.getElementById("ayah").value);
 
-    const ibu =
-        document.getElementById("ibu").checked;
+const ibu =
+Number(document.getElementById("ibu").value);
 
-    const anakLaki =
-        document.getElementById("anakLaki").checked;
+const anakLaki =
+Number(document.getElementById("anakLaki").value);
 
-    const anakPerempuan =
-        document.getElementById("anakPerempuan").checked;
+const anakPerempuan =
+Number(document.getElementById("anakPerempuan").value);
 
 
 
