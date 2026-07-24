@@ -59,7 +59,7 @@ function cariAsalMasalah(data) {
 // =====================
 
 function hitungWaris() {
-
+alert("Fungsi hitungWaris berjalan");
 
     const nama =
     document.getElementById("namaPewaris").value;
