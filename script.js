@@ -1,9 +1,11 @@
 function formatRupiah(angka) {
+
     return new Intl.NumberFormat("id-ID", {
         style: "currency",
         currency: "IDR",
         maximumFractionDigits: 0
     }).format(angka);
+
 }
 
 
@@ -12,99 +14,135 @@ function formatRupiah(angka) {
 // =====================
 
 function fpb(a, b) {
+
     while (b !== 0) {
+
         let sisa = a % b;
         a = b;
         b = sisa;
+
     }
+
     return a;
+
 }
+
 
 
 function kpk(a, b) {
+
     return (a * b) / fpb(a, b);
+
 }
+
 
 
 function cariAsalMasalah(data) {
 
     let hasil = 1;
 
+
     data.forEach(item => {
-        hasil = kpk(hasil, item.penyebut);
+
+        hasil = kpk(
+            hasil,
+            item.penyebut
+        );
+
     });
 
+
     return hasil;
+
 }
 
 
 
+
+// =====================
+// HITUNG WARIS
+// =====================
+
 function hitungWaris() {
 
 
-    const nama = document.getElementById("namaPewaris").value;
+    const nama =
+    document.getElementById("namaPewaris").value;
 
-    const gender = document.querySelector(
+
+    const gender =
+    document.querySelector(
         'input[name="gender"]:checked'
     );
 
 
-    const harta = Number(
-        document.getElementById("harta").value
-    );
+
+    const harta =
+    Number(document.getElementById("harta").value);
 
 
-    const jenazah = Number(
-        document.getElementById("jenazah").value
-    ) || 0;
+
+    const jenazah =
+    Number(document.getElementById("jenazah").value) || 0;
 
 
-    const utang = Number(
-        document.getElementById("utang").value
-    ) || 0;
+    const utang =
+    Number(document.getElementById("utang").value) || 0;
 
 
-    const wasiat = Number(
-        document.getElementById("wasiat").value
-    ) || 0;
+    const wasiat =
+    Number(document.getElementById("wasiat").value) || 0;
 
 
 
     const suami =
-Number(document.getElementById("suami").value);
+    Number(document.getElementById("suami").value);
 
-const istri =
-Number(document.getElementById("istri").value);
 
-const ayah =
-Number(document.getElementById("ayah").value);
+    const istri =
+    Number(document.getElementById("istri").value);
 
-const ibu =
-Number(document.getElementById("ibu").value);
 
-const anakLaki =
-Number(document.getElementById("anakLaki").value);
+    const ayah =
+    Number(document.getElementById("ayah").value);
 
-const anakPerempuan =
-Number(document.getElementById("anakPerempuan").value);
+
+    const ibu =
+    Number(document.getElementById("ibu").value);
+
+
+    const anakLaki =
+    Number(document.getElementById("anakLaki").value);
+
+
+    const anakPerempuan =
+    Number(document.getElementById("anakPerempuan").value);
+
 
 
 
     if (!nama || !gender) {
+
         alert("Lengkapi data pewaris");
+
         return;
+
     }
 
 
+
     if (harta <= 0) {
+
         alert("Masukkan total harta");
+
         return;
+
     }
 
 
 
     const hartaBersih =
-        harta - jenazah - utang - wasiat;
+    harta - jenazah - utang - wasiat;
 
 
 
@@ -115,7 +153,8 @@ Number(document.getElementById("anakPerempuan").value);
 
 
     const adaAnak =
-        anakLaki || anakPerempuan;
+    anakLaki > 0 || anakPerempuan > 0;
+
 
 
 
@@ -123,36 +162,42 @@ Number(document.getElementById("anakPerempuan").value);
 // ISTRI
 // =====================
 
-if (istri && gender.value === "L") {
+if (istri > 0 && gender.value === "L") {
 
 
-    let pecahan =
-        adaAnak ? "1/8" : "1/4";
-
-
-    let nilai =
-        adaAnak ?
-        hartaBersih / 8 :
-        hartaBersih / 4;
-
+    let bagian =
+    adaAnak ? 1/8 : 1/4;
 
 
     daftarBagian.push({
+
         nama:"Istri",
         pembilang:1,
         penyebut:adaAnak ? 8 : 4
+
     });
 
 
 
     hasilPembagian += `
+
     <p>
     <strong>👩 Istri</strong><br>
-    Bagian: ${pecahan}<br>
-    Nilai: ${formatRupiah(nilai)}
+
+    Bagian:
+    ${adaAnak ? "1/8" : "1/4"}
+
+    <br>
+
+    Nilai:
+    ${formatRupiah(hartaBersih * bagian)}
+
     </p>
+
     `;
+
 }
+
 
 
 
@@ -160,36 +205,46 @@ if (istri && gender.value === "L") {
 // IBU
 // =====================
 
-if (ibu) {
+if (ibu > 0) {
 
 
-    let pecahan =
-    adaAnak ? "1/6" : "1/3";
-
-
-    let nilai =
-    adaAnak ?
-    hartaBersih / 6 :
-    hartaBersih / 3;
+    let bagian =
+    adaAnak ? 1/6 : 1/3;
 
 
 
     daftarBagian.push({
+
         nama:"Ibu",
         pembilang:1,
         penyebut:adaAnak ? 6 : 3
+
     });
 
 
 
     hasilPembagian += `
+
     <p>
+
     <strong>👩 Ibu</strong><br>
-    Bagian: ${pecahan}<br>
-    Nilai: ${formatRupiah(nilai)}
+
+    Bagian:
+    ${adaAnak ? "1/6" : "1/3"}
+
+    <br>
+
+    Nilai:
+    ${formatRupiah(hartaBersih * bagian)}
+
     </p>
+
     `;
+
+
 }
+
+
 
 
 
@@ -197,30 +252,40 @@ if (ibu) {
 // AYAH
 // =====================
 
-if (ayah && adaAnak) {
-
-
-    let nilai =
-    hartaBersih / 6;
-
+if (ayah > 0 && adaAnak) {
 
 
     daftarBagian.push({
+
         nama:"Ayah",
         pembilang:1,
         penyebut:6
+
     });
 
 
 
     hasilPembagian += `
+
     <p>
+
     <strong>👨 Ayah</strong><br>
-    Bagian: 1/6<br>
-    Nilai: ${formatRupiah(nilai)}
+
+    Bagian: 1/6
+
+    <br>
+
+    Nilai:
+    ${formatRupiah(hartaBersih / 6)}
+
     </p>
+
     `;
+
+
 }
+
+
 
 
 
@@ -228,34 +293,58 @@ if (ayah && adaAnak) {
 // ANAK PEREMPUAN
 // =====================
 
-if (anakPerempuan && !anakLaki) {
+if (anakPerempuan > 0 && anakLaki === 0) {
 
 
-    let pecahan =
-    "1/2";
+    let bagian;
 
 
-    let nilai =
-    hartaBersih / 2;
+    if (anakPerempuan === 1) {
+
+        bagian = 1/2;
+
+    } else {
+
+        bagian = 2/3;
+
+    }
 
 
 
     daftarBagian.push({
+
         nama:"Anak Perempuan",
-        pembilang:1,
-        penyebut:2
+        pembilang:
+        anakPerempuan === 1 ? 1 : 2,
+
+        penyebut:
+        anakPerempuan === 1 ? 2 : 3
+
     });
 
 
 
     hasilPembagian += `
+
     <p>
+
     <strong>👧 Anak Perempuan</strong><br>
-    Bagian: ${pecahan}<br>
-    Nilai: ${formatRupiah(nilai)}
+
+    Bagian:
+    ${anakPerempuan === 1 ? "1/2" : "2/3"}
+
+    <br>
+
+    Nilai:
+    ${formatRupiah(hartaBersih * bagian)}
+
     </p>
+
     `;
+
+
 }
+
 
 
 
@@ -270,37 +359,53 @@ cariAsalMasalah(daftarBagian);
 
 let hasilAsal = "";
 
+
 daftarBagian.forEach(item => {
 
+
     let bagian =
-    (asalMasalah / item.penyebut) * item.pembilang;
+    (asalMasalah / item.penyebut)
+    *
+    item.pembilang;
+
 
 
     hasilAsal += `
 
     <p>
+
     <strong>${item.nama}</strong><br>
-    Bagian: ${bagian}/${asalMasalah}
+
+    Bagian:
+    ${bagian}/${asalMasalah}
+
     </p>
 
     `;
+
 
 });
 
 
 
+
+
 // =====================
-// HASIL AKHIR
+// TAMPIL HASIL
 // =====================
+
 
 let hasil = `
 
+
 <h3>📊 Data Perhitungan</h3>
+
 
 <p>
 <strong>Pewaris:</strong><br>
 ${nama}
 </p>
+
 
 <p>
 <strong>Harta Bersih:</strong><br>
@@ -308,23 +413,31 @@ ${formatRupiah(hartaBersih)}
 </p>
 
 
+
 <hr>
+
 
 <h3>⚖️ Hasil Pembagian</h3>
 
 ${hasilPembagian}
 
 
+
 <hr>
 
+
 <h3>📐 Asal Masalah</h3>
+
 
 <p>
 Penyebut Bersama:
 <strong>${asalMasalah}</strong>
 </p>
 
+
 ${hasilAsal}
+
+
 
 `;
 
@@ -333,8 +446,14 @@ ${hasilAsal}
 document.getElementById("hasil").innerHTML = hasil;
 
 
+
 }
 
+
+
     
+
+
+
 
     
