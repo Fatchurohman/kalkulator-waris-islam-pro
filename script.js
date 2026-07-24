@@ -1,3 +1,34 @@
+// =====================
+// FUNGSI FPB DAN KPK
+// =====================
+
+function fpb(a, b) {
+    while (b !== 0) {
+        let sisa = a % b;
+        a = b;
+        b = sisa;
+    }
+    return a;
+}
+
+
+function kpk(a, b) {
+    return (a * b) / fpb(a, b);
+}
+
+
+// Mencari asal masalah dari semua penyebut
+
+function cariAsalMasalah(daftar) {
+
+    let hasil = 1;
+
+    daftar.forEach(item => {
+        hasil = kpk(hasil, item.penyebut);
+    });
+
+    return hasil;
+}
 function formatRupiah(angka) {
     return new Intl.NumberFormat("id-ID", {
         style: "currency",
