@@ -28,7 +28,6 @@ function fpb(a, b) {
 }
 
 
-
 function kpk(a, b) {
 
     return (a * b) / fpb(a, b);
@@ -36,11 +35,9 @@ function kpk(a, b) {
 }
 
 
-
 function cariAsalMasalah(data) {
 
     let hasil = 1;
-
 
     data.forEach(item => {
 
@@ -51,11 +48,9 @@ function cariAsalMasalah(data) {
 
     });
 
-
     return hasil;
 
 }
-
 
 
 
@@ -76,10 +71,8 @@ function hitungWaris() {
     );
 
 
-
     const harta =
     Number(document.getElementById("harta").value);
-
 
 
     const jenazah =
@@ -120,7 +113,6 @@ function hitungWaris() {
 
 
 
-
     if (!nama || !gender) {
 
         alert("Lengkapi data pewaris");
@@ -128,7 +120,6 @@ function hitungWaris() {
         return;
 
     }
-
 
 
     if (harta <= 0) {
@@ -146,9 +137,10 @@ function hitungWaris() {
 
 
 
-    let hasilPembagian = "";
-
     let daftarBagian = [];
+
+
+    let hasilPembagian = "";
 
 
 
@@ -157,44 +149,22 @@ function hitungWaris() {
 
 
 
+    // LANJUT KE BAGIAN 2
 
-// =====================
+    
+    // =====================
 // ISTRI
 // =====================
 
 if (istri > 0 && gender.value === "L") {
 
-
-    let bagian =
-    adaAnak ? 1/8 : 1/4;
-
-
     daftarBagian.push({
 
-        nama:"Istri",
-        pembilang:1,
-        penyebut:adaAnak ? 8 : 4
+        nama: "Istri",
+        pembilang: 1,
+        penyebut: adaAnak ? 8 : 4
 
     });
-
-
-
-    hasilPembagian += `
-
-    <p>
-    <strong>👩 Istri</strong><br>
-
-    Bagian:
-    ${adaAnak ? "1/8" : "1/4"}
-
-    <br>
-
-    Nilai:
-    ${formatRupiah(hartaBersih * bagian)}
-
-    </p>
-
-    `;
 
 }
 
@@ -207,43 +177,15 @@ if (istri > 0 && gender.value === "L") {
 
 if (ibu > 0) {
 
-
-    let bagian =
-    adaAnak ? 1/6 : 1/3;
-
-
-
     daftarBagian.push({
 
-        nama:"Ibu",
-        pembilang:1,
-        penyebut:adaAnak ? 6 : 3
+        nama: "Ibu",
+        pembilang: 1,
+        penyebut: adaAnak ? 6 : 3
 
     });
 
-
-
-    hasilPembagian += `
-
-    <p>
-
-    <strong>👩 Ibu</strong><br>
-
-    Bagian:
-    ${adaAnak ? "1/6" : "1/3"}
-
-    <br>
-
-    Nilai:
-    ${formatRupiah(hartaBersih * bagian)}
-
-    </p>
-
-    `;
-
-
 }
-
 
 
 
@@ -254,37 +196,15 @@ if (ibu > 0) {
 
 if (ayah > 0 && adaAnak) {
 
-
     daftarBagian.push({
 
-        nama:"Ayah",
-        pembilang:1,
-        penyebut:6
+        nama: "Ayah",
+        pembilang: 1,
+        penyebut: 6
 
     });
 
-
-
-    hasilPembagian += `
-
-    <p>
-
-    <strong>👨 Ayah</strong><br>
-
-    Bagian: 1/6
-
-    <br>
-
-    Nilai:
-    ${formatRupiah(hartaBersih / 6)}
-
-    </p>
-
-    `;
-
-
 }
-
 
 
 
@@ -296,54 +216,32 @@ if (ayah > 0 && adaAnak) {
 if (anakPerempuan > 0 && anakLaki === 0) {
 
 
-    let bagian;
-
-
     if (anakPerempuan === 1) {
 
-        bagian = 1/2;
+        daftarBagian.push({
+
+            nama: "Anak Perempuan",
+            pembilang: 1,
+            penyebut: 2
+
+        });
+
 
     } else {
 
-        bagian = 2/3;
+
+        daftarBagian.push({
+
+            nama: "Anak Perempuan",
+            pembilang: 2,
+            penyebut: 3
+
+        });
 
     }
 
-
-
-    daftarBagian.push({
-
-        nama:"Anak Perempuan",
-        pembilang:
-        anakPerempuan === 1 ? 1 : 2,
-
-        penyebut:
-        anakPerempuan === 1 ? 2 : 3
-
-    });
-
-
-
-    hasilPembagian += `
-
-    <p>
-
-    <strong>👧 Anak Perempuan</strong><br>
-
-    Bagian:
-    ${anakPerempuan === 1 ? "1/2" : "2/3"}
-
-    <br>
-
-    Nilai:
-    ${formatRupiah(hartaBersih * bagian)}
-
-    </p>
-
-    `;
-
-
 }
+
 
 
 
@@ -359,61 +257,139 @@ cariAsalMasalah(daftarBagian);
 
 let dataAsal = [];
 
+
+
 daftarBagian.forEach(item => {
 
-    let bagian =
-    (asalMasalah / item.penyebut) * item.pembilang;
+
+    let saham =
+    (asalMasalah / item.penyebut)
+    *
+    item.pembilang;
+
+
 
     dataAsal.push({
+
         nama: item.nama,
-        saham: bagian
+        saham: saham
+
     });
 
-    let hasilAsal = "";
-
-dataAsal.forEach(item => {
-
-    hasilAsal += `
-    <p>
-        <strong>${item.nama}</strong><br>
-        Bagian: ${item.saham}/${asalMasalah}
-    </p>
-    `;
 
 });
 
+
+
+
+
 // =====================
-// HITUNG SISA ('ASHABAH)
+// 'ASHABAH
 // =====================
 
 let totalSaham = 0;
 
+
 dataAsal.forEach(item => {
+
     totalSaham += item.saham;
+
 });
 
-let sisaSaham = asalMasalah - totalSaham;
 
-// Jika ada sisa dan ada ayah,
-// ayah mendapat sisa sebagai 'ashabah.
+
+let sisaSaham =
+asalMasalah - totalSaham;
+
+
 
 if (sisaSaham > 0) {
 
-    let ayahData = dataAsal.find(
+
+    let ayahData =
+    dataAsal.find(
         item => item.nama === "Ayah"
     );
 
+
     if (ayahData) {
+
         ayahData.saham += sisaSaham;
+
     }
+
 
 }
 
 
 
-// =====================
+// LANJUT KE BAGIAN 3
+
+        // =====================
 // TAMPIL HASIL
 // =====================
+
+
+let hasilAsal = "";
+
+
+dataAsal.forEach(item => {
+
+
+    hasilAsal += `
+
+    <p>
+
+    <strong>${item.nama}</strong><br>
+
+    Bagian:
+    ${item.saham}/${asalMasalah}
+
+    </p>
+
+    `;
+
+
+});
+
+
+
+
+
+dataAsal.forEach(item => {
+
+
+    let nilai = 
+    (item.saham / asalMasalah)
+    *
+    hartaBersih;
+
+
+
+    hasilPembagian += `
+
+    <p>
+
+    <strong>${item.nama}</strong><br>
+
+    Bagian:
+    ${item.saham}/${asalMasalah}
+
+    <br>
+
+    Nilai:
+    ${formatRupiah(nilai)}
+
+    </p>
+
+    `;
+
+
+});
+
+
+
+
 
 
 let hasil = `
@@ -423,14 +399,21 @@ let hasil = `
 
 
 <p>
+
 <strong>Pewaris:</strong><br>
+
 ${nama}
+
 </p>
 
 
+
 <p>
+
 <strong>Harta Bersih:</strong><br>
+
 ${formatRupiah(hartaBersih)}
+
 </p>
 
 
@@ -438,7 +421,9 @@ ${formatRupiah(hartaBersih)}
 <hr>
 
 
+
 <h3>⚖️ Hasil Pembagian</h3>
+
 
 ${hasilPembagian}
 
@@ -447,12 +432,16 @@ ${hasilPembagian}
 <hr>
 
 
+
 <h3>📐 Asal Masalah</h3>
 
 
 <p>
+
 Penyebut Bersama:
+
 <strong>${asalMasalah}</strong>
+
 </p>
 
 
@@ -464,17 +453,9 @@ ${hasilAsal}
 
 
 
+
 document.getElementById("hasil").innerHTML = hasil;
 
 
 
 }
-
-
-
-    
-
-
-
-
-    
