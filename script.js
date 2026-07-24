@@ -158,7 +158,9 @@ daftarBagian.push({
 
         let bagianAyah = hartaBersih * 1 / 6;
 
-
+// =====================
+// AYAH
+// =====================
         hasilPembagian += `
         <p>
         <strong>👨 Ayah</strong><br>
