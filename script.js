@@ -371,7 +371,6 @@ daftarBagian.forEach(item => {
 
 });
 
-    <p>
 
     let hasilAsal = "";
 
