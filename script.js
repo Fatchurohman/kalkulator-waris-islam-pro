@@ -187,7 +187,11 @@ if (anakPerempuan > 0 && anakLaki === 0) {
         bagianAnakPerempuan = hartaBersih * 2 / 3;
         pecahan = "2/3";
     }
-
+daftarBagian.push({
+    nama: "Anak Perempuan",
+    pembilang: anakPerempuan === 1 ? 1 : 2,
+    penyebut: anakPerempuan === 1 ? 2 : 3
+});
     hasilPembagian += `
     <p>
     <strong>👧 Anak Perempuan (${anakPerempuan})</strong><br>
