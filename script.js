@@ -1,21 +1,10 @@
 /**
- * Engine Kalkulator Faraidh (Ilmu Waris Islam) - Mazhab Syafi'i (Versi 2.0 Complete)
+ * Engine Kalkulator Faraidh (Ilmu Waris Islam) - Mazhab Syafi'i (Versi 2.1 Fixed Nominal)
  * File: script.js
- * 
- * Fitur & Aturan Logika:
- * 1. Pembersihan Harta (Harta Kotor - Hutang/Biaya Jenazah - Wasiat maks 1/3)
- * 2. Logika Hijab Hirman (Penghalang Ahli Waris menurut Mazhab Syafi'i)
- * 3. Al-Furudul Muqaddarah & Ashabah (Binafsihi, Bil Ghair, Ma'al Ghair)
- * 4. Penyelesaian 'Aul & Radd
- * 5. PENANGANAN KASUS KHUSUS SYAFI'I:
- *    - Mas'alah Gharrawain / Umariyatain (Pasangan + Ibu + Ayah)
- *    - Mas'alah Musytarakah / Himariyah (Suami + Ibu/Nenek + Saudara Seibu >= 2 + Saudara Kandung Laki)
- *    - Mas'alah Akdariyah (Suami + Ibu + Kakek + 1 Saudara Kandung Perempuan)
  */
 
 class FaraidhEngineSyafii {
     constructor(inputData) {
-        // 1. Pengolahan Harta
         this.hartaKotor = parseFloat(inputData.hartaKotor) || 0;
         this.hutangBiaya = parseFloat(inputData.hutangBiaya) || 0;
         this.wasiat = parseFloat(inputData.wasiat) || 0;
@@ -25,7 +14,6 @@ class FaraidhEngineSyafii {
         this.wasiatDiterima = Math.min(this.wasiat, batasWasiat);
         this.hartaBersih = Math.max(0, hartaSisaHutang - this.wasiatDiterima);
 
-        // Raw Ahli Waris Input
         this.rawWaris = {
             suami: inputData.suami ? 1 : 0,
             istri: parseInt(inputData.istri) || 0,
@@ -99,7 +87,6 @@ class FaraidhEngineSyafii {
             w.saudaraSeibu = 0;
         }
 
-        // Catatan: Kasus Musytarakah & Akdariyah ditangani secara khusus sebelum hijab saudara menghalangi
         if (adaKeturunanLaki || adaAyah) {
             let penghalang = adaAyah ? "Ayah" : "Anak/Cucu Laki-laki";
             h.saudaraKandungLaki = { terhalang: true, oleh: penghalang };
@@ -148,10 +135,7 @@ class FaraidhEngineSyafii {
     kalkulasi() {
         const raw = this.rawWaris;
 
-        // ==========================================
-        // CEK KASUS KHUSUS 1: GHARRAWAIN (UMARIYATAIN)
-        // (Suami/Istri + Ibu + Ayah TANPA Keturunan/Saudara)
-        // ==========================================
+        // GHARRAWAIN
         const totalKeturunanRaw = raw.anakLaki + raw.anakPerempuan + raw.cucuLaki + raw.cucuPerempuan;
         const totalSaudaraRaw = raw.saudaraKandungLaki + raw.saudaraKandungPerempuan + raw.saudaraSeayahLaki + raw.saudaraSeayahPerempuan + raw.saudaraSeibu;
         
@@ -163,20 +147,20 @@ class FaraidhEngineSyafii {
             if (raw.suami === 1) {
                 let nominalSuami = 0.5 * this.hartaBersih;
                 let sisa = this.hartaBersih - nominalSuami;
-                let nominalIbu = sisa / 3; // 1/3 dari SISA (Gharrawain)
-                let nominalAyah = sisa - nominalIbu; // Sisa akhir untuk Ayah
+                let nominalIbu = sisa / 3;
+                let nominalAyah = sisa - nominalIbu;
 
                 hasilNominal.suami = nominalSuami;
                 hasilNominal.ibu = nominalIbu;
                 hasilNominal.ayah = nominalAyah;
 
                 ket.suami = "1/2 (Porsi Fardh Suami)";
-                ket.ibu = "1/3 dari SISA HARTA (Kasus Khusus Gharrawain/Umariyatain)";
+                ket.ibu = "1/3 dari SISA HARTA (Kasus Khusus Gharrawain)";
                 ket.ayah = "Ashabah Binafsihi (Menerima sisa harta)";
             } else {
                 let nominalIstri = (0.25 * this.hartaBersih);
                 let sisa = this.hartaBersih - nominalIstri;
-                let nominalIbu = sisa / 3; // 1/3 dari SISA
+                let nominalIbu = sisa / 3;
                 let nominalAyah = sisa - nominalIbu;
 
                 hasilNominal.istri = nominalIstri;
@@ -184,7 +168,7 @@ class FaraidhEngineSyafii {
                 hasilNominal.ayah = nominalAyah;
 
                 ket.istri = `1/4 (Dibagi ${raw.istri} Istri)`;
-                ket.ibu = "1/3 dari SISA HARTA (Kasus Khusus Gharrawain/Umariyatain)";
+                ket.ibu = "1/3 dari SISA HARTA (Kasus Khusus Gharrawain)";
                 ket.ayah = "Ashabah Binafsihi (Menerima sisa harta)";
             }
 
@@ -196,10 +180,7 @@ class FaraidhEngineSyafii {
             };
         }
 
-        // ==========================================
-        // CEK KASUS KHUSUS 2: MUSYTARAKAH (HIMARIYAH)
-        // (Suami + Ibu/Nenek + Saudara Seibu >= 2 + Saudara Kandung Laki >= 1)
-        // ==========================================
+        // MUSYTARAKAH
         const adaIbuAtauNenek = (raw.ibu === 1 || raw.nenekIbu === 1 || raw.nenekAyah === 1);
         if (totalKeturunanRaw === 0 && raw.ayah === 0 && raw.kakek === 0 && raw.suami === 1 && adaIbuAtauNenek && raw.saudaraSeibu >= 2 && raw.saudaraKandungLaki >= 1) {
             this.terapkanHijab();
@@ -208,7 +189,7 @@ class FaraidhEngineSyafii {
 
             let porsiSuami = 1/2;
             let porsiIbuNenek = 1/6;
-            let porsiSeibu = 1/3; // Yang disyariatkan diserikatkan bersama Saudara Kandung
+            let porsiSeibu = 1/3;
 
             hasilNominal.suami = porsiSuami * this.hartaBersih;
             ket.suami = "1/2 (Fardh Suami)";
@@ -222,7 +203,6 @@ class FaraidhEngineSyafii {
                 ket.nenek = `1/6 (Dibagi untuk ${totalNenek} Nenek)`;
             }
 
-            // Porsi 1/3 dibagi RATA secara gabungan untuk Saudara Seibu & Saudara Kandung
             let totalOrangSyarikat = raw.saudaraSeibu + raw.saudaraKandungLaki + raw.saudaraKandungPerempuan;
             let nominalSyarikat = porsiSeibu * this.hartaBersih;
             let perOrang = nominalSyarikat / totalOrangSyarikat;
@@ -246,17 +226,12 @@ class FaraidhEngineSyafii {
             };
         }
 
-        // ==========================================
-        // CEK KASUS KHUSUS 3: AKDARIYAH
-        // (Suami + Ibu + Kakek + 1 Saudara Kandung Perempuan)
-        // ==========================================
+        // AKDARIYAH
         if (totalKeturunanRaw === 0 && raw.ayah === 0 && raw.suami === 1 && raw.ibu === 1 && raw.kakek === 1 && raw.saudaraKandungPerempuan === 1 && raw.saudaraKandungLaki === 0) {
             this.terapkanHijab();
             let hasilNominal = {};
             let ket = {};
 
-            // Porsi Awal Fardh: Suami (3/6), Ibu (2/6), Kakek (1/6), Sdri P (3/6) -> Total 9/6 (Aul ke 27)
-            // Hasil Akhir Akdariyah: Suami 9/27, Ibu 6/27, Kakek 8/27, Sdri P 4/27
             hasilNominal.suami = (9 / 27) * this.hartaBersih;
             hasilNominal.ibu = (6 / 27) * this.hartaBersih;
             hasilNominal.kakek = (8 / 27) * this.hartaBersih;
@@ -264,8 +239,8 @@ class FaraidhEngineSyafii {
 
             ket.suami = "9/27 (Kasus Akdariyah - Disesuaikan dari 1/2)";
             ket.ibu = "6/27 (Kasus Akdariyah - Disesuaikan dari 1/3)";
-            ket.kakek = "8/27 (Kasus Akdariyah - Gabungan Fardh & Ashabah rasio 2:1 dengan Saudara)";
-            ket.saudaraKandungPerempuan = "4/27 (Kasus Akdariyah - Gabungan Fardh & Ashabah rasio 1:2 dengan Kakek)";
+            ket.kakek = "8/27 (Kasus Akdariyah - Gabungan Fardh & Ashabah rasio 2:1)";
+            ket.saudaraKandungPerempuan = "4/27 (Kasus Akdariyah - Gabungan Fardh & Ashabah rasio 1:2)";
 
             return {
                 hartaKotor: this.hartaKotor, hutangBiaya: this.hutangBiaya, wasiatDiterima: this.wasiatDiterima,
@@ -275,9 +250,7 @@ class FaraidhEngineSyafii {
             };
         }
 
-        // ==========================================
-        // KALKULASI WARIS STANDAR (JIKA BUKAN KASUS KHUSUS)
-        // ==========================================
+        // WARIS STANDAR
         this.terapkanHijab();
         const w = this.warisAktif;
         const p = {};
@@ -508,12 +481,10 @@ class FaraidhEngineSyafii {
     }
 }
 
-// CONTROLLER & INTEGRASI DOM HTML
 function prosesHitungWaris() {
-    // Helper untuk membersihkan titik sebelum diubah jadi angka murni
     const parseRupiah = (id) => {
         let val = document.getElementById(id)?.value || "0";
-        let angkaBersih = val.toString().replace(/\./g, ''); // Hapus semua titik
+        let angkaBersih = val.toString().replace(/\./g, '');
         return parseFloat(angkaBersih) || 0;
     };
 
@@ -553,7 +524,6 @@ function renderHasilUI(hasil) {
     const container = document.getElementById('hasilOutput');
     if (!container) return;
 
-    // Helper format angka riil utuh dengan pemisah titik
     let fmt = (val) => {
         let nominalUtuh = Math.round(val || 0);
         return "Rp " + nominalUtuh.toLocaleString('id-ID');
@@ -596,7 +566,6 @@ function renderHasilUI(hasil) {
 
     for (let key in namaAhliWarisMap) {
         let label = namaAhliWarisMap[key];
-        // Pastikan membaca angka riil utuh hasil kalkulasi
         let nominalUtuh = hasil.hasilNominal[key] || 0;
         let ket = hasil.keterangan[key] || "-";
         let isHijab = hasil.statusHijab[key] && hasil.statusHijab[key].terhalang;
@@ -621,9 +590,6 @@ function renderHasilUI(hasil) {
             </tbody>
         </table>
     `;
-
-    container.innerHTML = html;
-}
 
     container.innerHTML = html;
 }
