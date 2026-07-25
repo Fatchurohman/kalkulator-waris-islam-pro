@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+      <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
@@ -7,14 +7,14 @@
   <style>
     :root {
       /* Palette Cokelat Keemasan Elegan */
-      --primary: #9a7b38;          /* Cokelat Emas Utama */
-      --primary-hover: #7a6027;    /* Cokelat Emas Gelap untuk Hover */
-      --bg: #fdfbf7;               /* Background Krem Lembut */
-      --card-bg: #ffffff;          /* Background Card Putih Clean */
-      --text: #2c2416;             /* Warna Teks Cokelat Tua Elegan */
-      --text-muted: #786c58;       /* Warna Teks Muted */
-      --border: #e8e2d5;           /* Border Krem Halus */
-      --accent-bg: #fbf8f1;        /* Background Seksi Krem Emas */
+      --primary: #9a7b38;          
+      --primary-hover: #7a6027;    
+      --bg: #fdfbf7;               
+      --card-bg: #ffffff;          
+      --text: #2c2416;             
+      --text-muted: #786c58;       
+      --border: #e8e2d5;           
+      --accent-bg: #fbf8f1;        
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -36,7 +36,6 @@
       box-shadow: 0 10px 25px -5px rgba(154, 123, 56, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
     }
 
-    /* Header & Judul */
     .header-box {
       text-align: center;
       margin-bottom: 30px;
@@ -59,7 +58,6 @@
       letter-spacing: 0.5px;
     }
 
-    /* Seksi Title */
     .section-title {
       font-size: 1.05rem;
       font-weight: 700;
@@ -126,7 +124,6 @@
       cursor: pointer;
     }
 
-    /* Tombol Utama */
     button.btn-hitung {
       width: 100%;
       background: linear-gradient(135deg, #b08d43 0%, #8c6d2d 100%);
@@ -148,8 +145,55 @@
       box-shadow: 0 6px 15px rgba(154, 123, 56, 0.35);
     }
 
+    /* Tombol Ekspor PDF */
+    button.btn-cetak {
+      display: none; /* Otomatis muncul lewat JS setelah dihitung */
+      width: 100%;
+      background-color: #2c2416;
+      color: #fdfbf7;
+      border: 1px solid var(--primary);
+      padding: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: all 0.2s ease;
+    }
+
+    button.btn-cetak:hover {
+      background-color: #423722;
+    }
+
     #hasilOutput {
       margin-top: 35px;
+    }
+
+    /* ==========================================
+       ATURAN TAMPILAN SAAT DICETAK / SIMPAN PDF
+       ========================================== */
+    @media print {
+      body {
+        background-color: #ffffff;
+        color: #000000;
+        padding: 0;
+      }
+      .container {
+        box-shadow: none;
+        border: none;
+        max-width: 100%;
+        padding: 0;
+      }
+      /* Sembunyikan Formulir dan Tombol saat Cetak PDF */
+      .section-title, .form-grid, .btn-hitung, .btn-cetak {
+        display: none !important;
+      }
+      .header-box {
+        border-bottom: 2px solid #000;
+        margin-bottom: 20px;
+      }
+      h1 { color: #000; }
+      .developer-tag { color: #333; }
     }
 
     @media (max-width: 600px) {
@@ -162,13 +206,12 @@
 <body>
 
 <div class="container">
-  <!-- HEADER BARU -->
   <div class="header-box">
     <h1>Kalkulator Waris</h1>
     <div class="developer-tag">developer : fatur62</div>
   </div>
 
-  <!-- SEKSI 1: HARTA & TANGGUNGAN -->
+  <!-- FORM INPUT -->
   <div class="section-title">1. Data Harta & Tanggungan (Rp)</div>
   <div class="form-grid">
     <div class="form-group">
@@ -185,7 +228,6 @@
     </div>
   </div>
 
-  <!-- SEKSI 2: AHLI WARIS UTAMA -->
   <div class="section-title">2. Ahli Waris Utama (Garis Usul & Furu')</div>
   <div class="form-grid">
     <div class="form-group checkbox-group">
@@ -214,7 +256,6 @@
     </div>
   </div>
 
-  <!-- SEKSI 3: CUCU & NENEK/KAKEK -->
   <div class="section-title">3. Cucu & Kakek / Nenek</div>
   <div class="form-grid">
     <div class="form-group">
@@ -239,7 +280,6 @@
     </div>
   </div>
 
-  <!-- SEKSI 4: SAUDARA & PAMAN -->
   <div class="section-title">4. Saudara & Kerabat Laki-Laki (Hawasi)</div>
   <div class="form-grid">
     <div class="form-group">
@@ -280,10 +320,13 @@
     </div>
   </div>
 
-  <button class="btn-hitung" onclick="prosesHitungWaris()">Hitung Pembagian Waris</button>
+  <button class="btn-hitung" onclick="prosesHitungDanTampilkan()">Hitung Pembagian Waris</button>
 
-  <!-- TEMPAT HASIL PERHITUNGAN DI-RENDER -->
+  <!-- TEMPAT HASIL -->
   <div id="hasilOutput"></div>
+
+  <!-- TOMBOL CETAK / EKSPOR PDF -->
+  <button id="btnCetakPDF" class="btn-cetak" onclick="window.print()">🖨️ Cetak / Simpan PDF Hasil Perhitungan</button>
 </div>
 
 <script>
@@ -292,6 +335,18 @@
       document.getElementById('istri').value = 0;
     } else if (type === 'istri' && parseInt(document.getElementById('istri').value) > 0) {
       document.getElementById('suami').checked = false;
+    }
+  }
+
+  // Fungsi Pembungkus untuk Menghitung & Memunculkan Tombol Cetak PDF
+  function prosesHitungDanTampilkan() {
+    // Panggil fungsi utama perhitungan di script.js
+    prosesHitungWaris();
+    
+    // Tampilkan tombol cetak PDF setelah hasil berhasil dihitung
+    const btnCetak = document.getElementById('btnCetakPDF');
+    if (btnCetak) {
+      btnCetak.style.display = 'block';
     }
   }
 </script>
