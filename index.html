@@ -1,4 +1,4 @@
-   <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
@@ -311,9 +311,8 @@
 </div>
 
 <script>
-  // Format angka rupiah otomatis titik saat diketik
   function formatRupiahInput(input) {
-    let value = input.value.replace(/[^0-9]/g, ''); // Ambil angka saja
+    let value = input.value.replace(/[^0-9]/g, '');
     if (value === '') {
       input.value = '';
       return;
@@ -330,10 +329,12 @@
   }
 
   function prosesHitungDanTampilkan() {
-    prosesHitungWaris();
-    const btnCetak = document.getElementById('btnCetakPDF');
-    if (btnCetak) {
-      btnCetak.style.display = 'block';
+    if (typeof prosesHitungWaris === 'function') {
+      prosesHitungWaris();
+      const btnCetak = document.getElementById('btnCetakPDF');
+      if (btnCetak) btnCetak.style.display = 'block';
+    } else {
+      alert('Sistem belum siap. Pastikan file script.js sudah ter-upload.');
     }
   }
 </script>
