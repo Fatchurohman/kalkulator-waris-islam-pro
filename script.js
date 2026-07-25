@@ -553,7 +553,11 @@ function renderHasilUI(hasil) {
     const container = document.getElementById('hasilOutput');
     if (!container) return;
 
-    let fmt = (val) => "Rp " + Math.round(val).toLocaleString('id-ID');
+    // Helper format angka riil utuh dengan pemisah titik
+    let fmt = (val) => {
+        let nominalUtuh = Math.round(val || 0);
+        return "Rp " + nominalUtuh.toLocaleString('id-ID');
+    };
 
     let html = `
         <div style="background:#fcf8f2; border:1px solid #e8dcc4; padding:18px; border-radius:10px; margin-bottom:20px;">
@@ -592,11 +596,12 @@ function renderHasilUI(hasil) {
 
     for (let key in namaAhliWarisMap) {
         let label = namaAhliWarisMap[key];
-        let nominal = hasil.hasilNominal[key] || 0;
+        // Pastikan membaca angka riil utuh hasil kalkulasi
+        let nominalUtuh = hasil.hasilNominal[key] || 0;
         let ket = hasil.keterangan[key] || "-";
         let isHijab = hasil.statusHijab[key] && hasil.statusHijab[key].terhalang;
 
-        if (nominal > 0 || isHijab) {
+        if (nominalUtuh > 0 || isHijab) {
             let rowBg = isHijab ? "#fff5f5" : "#ffffff";
             let statusText = isHijab ? `<span style="color:#dc2626; font-weight:bold;">Mahjub / Terhalang oleh ${hasil.statusHijab[key].oleh}</span>` : ket;
 
@@ -604,8 +609,8 @@ function renderHasilUI(hasil) {
                 <tr style="background-color:${rowBg}; border-bottom:1px solid #e8e2d5;">
                     <td style="padding:10px; border:1px solid #e8e2d5;"><strong>${label}</strong></td>
                     <td style="padding:10px; border:1px solid #e8e2d5;">${statusText}</td>
-                    <td style="padding:10px; border:1px solid #e8e2d5; font-weight:bold; color:${nominal > 0 ? '#7a6027' : '#94a3b8'};">
-                        ${fmt(nominal)}
+                    <td style="padding:10px; border:1px solid #e8e2d5; font-weight:bold; color:${nominalUtuh > 0 ? '#7a6027' : '#94a3b8'};">
+                        ${fmt(nominalUtuh)}
                     </td>
                 </tr>
             `;
@@ -616,6 +621,9 @@ function renderHasilUI(hasil) {
             </tbody>
         </table>
     `;
+
+    container.innerHTML = html;
+}
 
     container.innerHTML = html;
 }
