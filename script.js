@@ -510,10 +510,17 @@ class FaraidhEngineSyafii {
 
 // CONTROLLER & INTEGRASI DOM HTML
 function prosesHitungWaris() {
+    // Helper untuk membersihkan titik sebelum diubah jadi angka murni
+    const parseRupiah = (id) => {
+        let val = document.getElementById(id)?.value || "0";
+        let angkaBersih = val.toString().replace(/\./g, ''); // Hapus semua titik
+        return parseFloat(angkaBersih) || 0;
+    };
+
     const inputData = {
-        hartaKotor: document.getElementById('hartaKotor')?.value || 0,
-        hutangBiaya: document.getElementById('hutangBiaya')?.value || 0,
-        wasiat: document.getElementById('wasiat')?.value || 0,
+        hartaKotor: parseRupiah('hartaKotor'),
+        hutangBiaya: parseRupiah('hutangBiaya'),
+        wasiat: parseRupiah('wasiat'),
         suami: document.getElementById('suami')?.checked || false,
         istri: document.getElementById('istri')?.value || 0,
         anakLaki: document.getElementById('anakLaki')?.value || 0,
