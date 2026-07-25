@@ -1,1 +1,356 @@
+   <!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalkulator Waris Syafi'i</title>
+  <style>
+    :root {
+      /* Palette Cokelat Keemasan Elegan */
+      --primary: #9a7b38;          
+      --primary-hover: #7a6027;    
+      --bg: #fdfbf7;               
+      --card-bg: #ffffff;          
+      --text: #2c2416;             
+      --text-muted: #786c58;       
+      --border: #e8e2d5;           
+      --accent-bg: #fbf8f1;        
+    }
 
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 35px 30px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 25px -5px rgba(154, 123, 56, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+    }
+
+    .header-box {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      color: var(--primary);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+    }
+
+    .developer-tag {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      padding-bottom: 8px;
+      margin-bottom: 18px;
+      border-bottom: 2px solid var(--primary);
+      color: var(--primary-hover);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group.checkbox-group {
+      flex-direction: row;
+      align-items: center;
+      gap: 10px;
+      margin-top: 24px;
+      background-color: var(--accent-bg);
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    input[type="number"], select {
+      padding: 11px 14px;
+      border: 1px solid var(--border);
+      background-color: #faf8f5;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      color: var(--text);
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    input[type="number"]:focus, select:focus {
+      border-color: var(--primary);
+      background-color: #ffffff;
+      box-shadow: 0 0 0 3px rgba(154, 123, 56, 0.15);
+    }
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    button.btn-hitung {
+      width: 100%;
+      background: linear-gradient(135deg, #b08d43 0%, #8c6d2d 100%);
+      color: white;
+      border: none;
+      padding: 16px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(154, 123, 56, 0.25);
+      transition: all 0.2s ease;
+      margin-top: 10px;
+    }
+
+    button.btn-hitung:hover {
+      background: linear-gradient(135deg, #9a7b38 0%, #7a6027 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 15px rgba(154, 123, 56, 0.35);
+    }
+
+    /* Tombol Ekspor PDF */
+    button.btn-cetak {
+      display: none; /* Otomatis muncul lewat JS setelah dihitung */
+      width: 100%;
+      background-color: #2c2416;
+      color: #fdfbf7;
+      border: 1px solid var(--primary);
+      padding: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: all 0.2s ease;
+    }
+
+    button.btn-cetak:hover {
+      background-color: #423722;
+    }
+
+    #hasilOutput {
+      margin-top: 35px;
+    }
+
+    /* ==========================================
+       ATURAN TAMPILAN SAAT DICETAK / SIMPAN PDF
+       ========================================== */
+    @media print {
+      body {
+        background-color: #ffffff;
+        color: #000000;
+        padding: 0;
+      }
+      .container {
+        box-shadow: none;
+        border: none;
+        max-width: 100%;
+        padding: 0;
+      }
+      /* Sembunyikan Formulir dan Tombol saat Cetak PDF */
+      .section-title, .form-grid, .btn-hitung, .btn-cetak {
+        display: none !important;
+      }
+      .header-box {
+        border-bottom: 2px solid #000;
+        margin-bottom: 20px;
+      }
+      h1 { color: #000; }
+      .developer-tag { color: #333; }
+    }
+
+    @media (max-width: 600px) {
+      .container { padding: 20px 15px; }
+      h1 { font-size: 1.8rem; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header-box">
+    <h1>Kalkulator Waris</h1>
+    <div class="developer-tag">developer : fatur62</div>
+  </div>
+
+  <!-- FORM INPUT -->
+  <div class="section-title">1. Data Harta & Tanggungan (Rp)</div>
+  <div class="form-grid">
+    <div class="form-group">
+      <label for="hartaKotor">Total Harta Kotor</label>
+      <input type="number" id="hartaKotor" placeholder="0" value="100000000">
+    </div>
+    <div class="form-group">
+      <label for="hutangBiaya">Hutang & Biaya Jenazah</label>
+      <input type="number" id="hutangBiaya" placeholder="0" value="0">
+    </div>
+    <div class="form-group">
+      <label for="wasiat">Wasiat (Maks 1/3 Harta)</label>
+      <input type="number" id="wasiat" placeholder="0" value="0">
+    </div>
+  </div>
+
+  <div class="section-title">2. Ahli Waris Utama (Garis Usul & Furu')</div>
+  <div class="form-grid">
+    <div class="form-group checkbox-group">
+      <input type="checkbox" id="suami" onchange="togglePasangan('suami')">
+      <label for="suami">Ada Suami?</label>
+    </div>
+    <div class="form-group">
+      <label for="istri">Jumlah Istri (0-4)</label>
+      <input type="number" id="istri" min="0" max="4" value="0" onchange="togglePasangan('istri')">
+    </div>
+    <div class="form-group">
+      <label for="anakLaki">Jumlah Anak Laki-Laki</label>
+      <input type="number" id="anakLaki" min="0" value="0">
+    </div>
+    <div class="form-group">
+      <label for="anakPerempuan">Jumlah Anak Perempuan</label>
+      <input type="number" id="anakPerempuan" min="0" value="0">
+    </div>
+    <div class="form-group checkbox-group">
+      <input type="checkbox" id="ayah">
+      <label for="ayah">Ayah Masih Hidup?</label>
+    </div>
+    <div class="form-group checkbox-group">
+      <input type="checkbox" id="ibu">
+      <label for="ibu">Ibu Masih Hidup?</label>
+    </div>
+  </div>
+
+  <div class="section-title">3. Cucu & Kakek / Nenek</div>
+  <div class="form-grid">
+    <div class="form-group">
+      <label for="cucuLaki">Cucu Laki (dari Anak Laki)</label>
+      <input type="number" id="cucuLaki" min="0" value="0">
+    </div>
+    <div class="form-group">
+      <label for="cucuPerempuan">Cucu Perempuan (dari Anak Laki)</label>
+      <input type="number" id="cucuPerempuan" min="0" value="0">
+    </div>
+    <div class="form-group checkbox-group">
+      <input type="checkbox" id="kakek">
+      <label for="kakek">Kakek (Ayah dari Ayah)</label>
+    </div>
+    <div class="form-group checkbox-group">
+      <input type="checkbox" id="nenekIbu">
+      <label for="nenekIbu">Nenek (Ibu dari Ibu)</label>
+    </div>
+    <div class="form-group checkbox-group">
+      <input type="checkbox" id="nenekAyah">
+      <label for="nenekAyah">Nenek (Ibu dari Ayah)</label>
+    </div>
+  </div>
+
+  <div class="section-title">4. Saudara & Kerabat Laki-Laki (Hawasi)</div>
+  <div class="form-grid">
+    <div class="form-group">
+      <label for="saudaraKandungLaki">Saudara Kandung Laki-laki</label>
+      <input type="number" id="saudaraKandungLaki" min="0" value="0">
+    </div>
+    <div class="form-group">
+      <label for="saudaraKandungPerempuan">Saudara Kandung Perempuan</label>
+      <input type="number" id="saudaraKandungPerempuan" min="0" value="0">
+    </div>
+    <div class="form-group">
+      <label for="saudaraSeayahLaki">Saudara Seayah Laki-laki</label>
+      <input type="number" id="saudaraSeayahLaki" min="0" value="0">
+    </div>
+    <div class="form-group">
+      <label for="saudaraSeayahPerempuan">Saudara Seayah Perempuan</label>
+      <input type="number" id="saudaraSeayahPerempuan" min="0" value="0">
+    </div>
+    <div class="form-group">
+      <label for="saudaraSeibu">Saudara Seibu (Laki/Perempuan)</label>
+      <input type="number" id="saudaraSeibu" min="0" value="0">
+    </div>
+    <div class="form-group">
+      <label for="pamanKandung">Paman Kandung (Saudara Ayah)</label>
+      <input type="number" id="pamanKandung" min="0" value="0">
+    </div>
+    <div class="form-group">
+      <label for="pamanSeayah">Paman Seayah</label>
+      <input type="number" id="pamanSeayah" min="0" value="0">
+    </div>
+    <div class="form-group">
+      <label for="anakPamanKandung">Sepupu Laki (Anak Paman Kandung)</label>
+      <input type="number" id="anakPamanKandung" min="0" value="0">
+    </div>
+    <div class="form-group">
+      <label for="anakPamanSeayah">Sepupu Laki (Anak Paman Seayah)</label>
+      <input type="number" id="anakPamanSeayah" min="0" value="0">
+    </div>
+  </div>
+
+  <button class="btn-hitung" onclick="prosesHitungDanTampilkan()">Hitung Pembagian Waris</button>
+
+  <!-- TEMPAT HASIL -->
+  <div id="hasilOutput"></div>
+
+  <!-- TOMBOL CETAK / EKSPOR PDF -->
+  <button id="btnCetakPDF" class="btn-cetak" onclick="window.print()">🖨️ Cetak / Simpan PDF Hasil Perhitungan</button>
+</div>
+
+<script>
+  function togglePasangan(type) {
+    if (type === 'suami' && document.getElementById('suami').checked) {
+      document.getElementById('istri').value = 0;
+    } else if (type === 'istri' && parseInt(document.getElementById('istri').value) > 0) {
+      document.getElementById('suami').checked = false;
+    }
+  }
+
+  // Fungsi Pembungkus untuk Menghitung & Memunculkan Tombol Cetak PDF
+  function prosesHitungDanTampilkan() {
+    // Panggil fungsi utama perhitungan di script.js
+    prosesHitungWaris();
+    
+    // Tampilkan tombol cetak PDF setelah hasil berhasil dihitung
+    const btnCetak = document.getElementById('btnCetakPDF');
+    if (btnCetak) {
+      btnCetak.style.display = 'block';
+    }
+  }
+</script>
+
+<script src="script.js"></script>
+</body>
+</html>
