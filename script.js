@@ -201,7 +201,7 @@ class FaraidhEngineSyafii {
                 ket.anakPerempuan = `2/3 (Fardh - Dibagi ${w.anakPerempuan} anak perempuan)`;
             }
         } else {
-            ket.anakLaki = `Ashabah bil Ghair (Rasio 2:1 bersama Anak Perempuan)`;
+            ket.anakLaki = `Ashabah bi nafsihi (Rasio 2:1 bersama Anak Perempuan)`;
             if (w.anakPerempuan > 0) {
                 ket.anakPerempuan = `Ashabah bil Ghair (Menerima setengah dari bagian Anak Laki-Laki)`;
             }
