@@ -1,5 +1,5 @@
 /**
- * Engine Kalkulator Faraidh (Ilmu Waris Islam) - Mazhab Syafi'i (Versi 2.5 Perfect 'Aul Detection)
+ * Engine Kalkulator Faraidh (Ilmu Waris Islam) - Mazhab Syafi'i (Versi 2.6 Fixed Radd Status Detection)
  * File: script.js
  */
 
@@ -319,7 +319,7 @@ class FaraidhEngineSyafii {
         let hasilNominal = {};
         let statusKalkulasi = "PEMBAGIAN NORMAL";
 
-        // PENANGANAN 'AUL (JIKA TOTAL PORSI FARDH > 1)
+        // 1. TERJADI 'AUL (TOTAL FARDH > 1)
         if (totalFardh > 1.000001) {
             statusKalkulasi = "TERJADI 'AUL (Total porsi melebihi 1, disesuaikan secara proporsional)";
             for (let key in p) {
@@ -328,75 +328,75 @@ class FaraidhEngineSyafii {
                 ket[key] += ` ['Aul: Porsi disesuaikan dari ${(p[key]*100).toFixed(1)}% menjadi ${(porsiAul*100).toFixed(1)}%]`;
             }
         } else {
-            let sisaHarta = Math.max(0, this.hartaBersih * (1 - totalFardh));
-
+            // Hitung awal nilai fardh dasar
             for (let key in p) {
                 hasilNominal[key] = p[key] * this.hartaBersih;
             }
 
-            if (sisaHarta > 0.01) {
-                let adaAshabah = false;
+            let sisaHarta = Math.max(0, this.hartaBersih * (1 - totalFardh));
+            let adaAshabah = false;
 
-                if (w.anakLaki > 0) {
-                    let totalPoin = (w.anakLaki * 2) + (w.anakPerempuan * 1);
-                    let nilaiPoin = sisaHarta / totalPoin;
-                    hasilNominal.anakLaki = (hasilNominal.anakLaki || 0) + (nilaiPoin * 2 * w.anakLaki);
-                    if (w.anakPerempuan > 0) hasilNominal.anakPerempuan = (hasilNominal.anakPerempuan || 0) + (nilaiPoin * 1 * w.anakPerempuan);
-                    adaAshabah = true;
-                } else if (w.cucuLaki > 0) {
-                    let totalPoin = (w.cucuLaki * 2) + (w.cucuPerempuan * 1);
-                    let nilaiPoin = sisaHarta / totalPoin;
-                    hasilNominal.cucuLaki = (hasilNominal.cucuLaki || 0) + (nilaiPoin * 2 * w.cucuLaki);
-                    if (w.cucuPerempuan > 0) hasilNominal.cucuPerempuan = (hasilNominal.cucuPerempuan || 0) + (nilaiPoin * 1 * w.cucuPerempuan);
-                    adaAshabah = true;
-                } else if (w.ayah) {
-                    hasilNominal.ayah = (hasilNominal.ayah || 0) + sisaHarta;
-                    adaAshabah = true;
-                } else if (w.kakek) {
-                    hasilNominal.kakek = (hasilNominal.kakek || 0) + sisaHarta;
-                    adaAshabah = true;
-                } else if (w.saudaraKandungLaki > 0) {
-                    let totalPoin = (w.saudaraKandungLaki * 2) + (w.saudaraKandungPerempuan * 1);
-                    let nilaiPoin = sisaHarta / totalPoin;
-                    hasilNominal.saudaraKandungLaki = nilaiPoin * 2 * w.saudaraKandungLaki;
-                    if (w.saudaraKandungPerempuan > 0) hasilNominal.saudaraKandungPerempuan = nilaiPoin * 1 * w.saudaraKandungPerempuan;
-                    adaAshabah = true;
-                } else if (w.saudaraKandungPerempuan > 0 && (w.anakPerempuan > 0 || w.cucuPerempuan > 0)) {
-                    hasilNominal.saudaraKandungPerempuan = (hasilNominal.saudaraKandungPerempuan || 0) + sisaHarta;
-                    adaAshabah = true;
-                } else if (w.pamanKandung > 0) {
-                    hasilNominal.pamanKandung = sisaHarta;
-                    adaAshabah = true;
-                } else if (w.pamanSeayah > 0) {
-                    hasilNominal.pamanSeayah = sisaHarta;
-                    adaAshabah = true;
-                } else if (w.anakPamanKandung > 0) {
-                    hasilNominal.anakPamanKandung = sisaHarta;
-                    adaAshabah = true;
-                } else if (w.anakPamanSeayah > 0) {
-                    hasilNominal.anakPamanSeayah = sisaHarta;
-                    adaAshabah = true;
+            // CEK KEBERADAAN ASHABAH
+            if (w.anakLaki > 0) {
+                let totalPoin = (w.anakLaki * 2) + (w.anakPerempuan * 1);
+                let nilaiPoin = sisaHarta / totalPoin;
+                hasilNominal.anakLaki = (hasilNominal.anakLaki || 0) + (nilaiPoin * 2 * w.anakLaki);
+                if (w.anakPerempuan > 0) hasilNominal.anakPerempuan = (hasilNominal.anakPerempuan || 0) + (nilaiPoin * 1 * w.anakPerempuan);
+                adaAshabah = true;
+            } else if (w.cucuLaki > 0) {
+                let totalPoin = (w.cucuLaki * 2) + (w.cucuPerempuan * 1);
+                let nilaiPoin = sisaHarta / totalPoin;
+                hasilNominal.cucuLaki = (hasilNominal.cucuLaki || 0) + (nilaiPoin * 2 * w.cucuLaki);
+                if (w.cucuPerempuan > 0) hasilNominal.cucuPerempuan = (hasilNominal.cucuPerempuan || 0) + (nilaiPoin * 1 * w.cucuPerempuan);
+                adaAshabah = true;
+            } else if (w.ayah) {
+                hasilNominal.ayah = (hasilNominal.ayah || 0) + sisaHarta;
+                adaAshabah = true;
+            } else if (w.kakek) {
+                hasilNominal.kakek = (hasilNominal.kakek || 0) + sisaHarta;
+                adaAshabah = true;
+            } else if (w.saudaraKandungLaki > 0) {
+                let totalPoin = (w.saudaraKandungLaki * 2) + (w.saudaraKandungPerempuan * 1);
+                let nilaiPoin = sisaHarta / totalPoin;
+                hasilNominal.saudaraKandungLaki = nilaiPoin * 2 * w.saudaraKandungLaki;
+                if (w.saudaraKandungPerempuan > 0) hasilNominal.saudaraKandungPerempuan = nilaiPoin * 1 * w.saudaraKandungPerempuan;
+                adaAshabah = true;
+            } else if (w.saudaraKandungPerempuan > 0 && (w.anakPerempuan > 0 || w.cucuPerempuan > 0)) {
+                hasilNominal.saudaraKandungPerempuan = (hasilNominal.saudaraKandungPerempuan || 0) + sisaHarta;
+                adaAshabah = true;
+            } else if (w.pamanKandung > 0) {
+                hasilNominal.pamanKandung = sisaHarta;
+                adaAshabah = true;
+            } else if (w.pamanSeayah > 0) {
+                hasilNominal.pamanSeayah = sisaHarta;
+                adaAshabah = true;
+            } else if (w.anakPamanKandung > 0) {
+                hasilNominal.anakPamanKandung = sisaHarta;
+                adaAshabah = true;
+            } else if (w.anakPamanSeayah > 0) {
+                hasilNominal.anakPamanSeayah = sisaHarta;
+                adaAshabah = true;
+            }
+
+            // 2. TERJADI RADD (TOTAL FARDH < 1 DAN TANPA ASHABAH)
+            if (!adaAshabah && totalFardh < 0.999999) {
+                statusKalkulasi = "TERJADI RADD (Sisa harta dikembalikan secara proporsional)";
+                let totalFardhNonPasangan = 0;
+                for (let key in p) {
+                    if (key !== "suami" && key !== "istri") totalFardhNonPasangan += p[key];
                 }
 
-                if (!adaAshabah && sisaHarta > 0.01) {
-                    statusKalkulasi = "TERJADI RADD (Sisa harta dikembalikan secara proporsional)";
-                    let totalFardhNonPasangan = 0;
+                if (totalFardhNonPasangan > 0) {
                     for (let key in p) {
-                        if (key !== "suami" && key !== "istri") totalFardhNonPasangan += p[key];
-                    }
-
-                    if (totalFardhNonPasangan > 0) {
-                        for (let key in p) {
-                            if (key !== "suami" && key !== "istri") {
-                                let porsiRadd = (p[key] / totalFardhNonPasangan) * sisaHarta;
-                                hasilNominal[key] += porsiRadd;
-                                ket[key] += " + [Dapat Pengembalian Radd]";
-                            }
+                        if (key !== "suami" && key !== "istri") {
+                            let porsiRadd = (p[key] / totalFardhNonPasangan) * sisaHarta;
+                            hasilNominal[key] += porsiRadd;
+                            ket[key] += " + [Dapat Pengembalian Radd]";
                         }
-                    } else {
-                        hasilNominal.baitulMaal = sisaHarta;
-                        ket.baitulMaal = "Baitul Maal (Sisa harta tidak dikembalikan ke Suami/Istri)";
                     }
+                } else {
+                    hasilNominal.baitulMaal = sisaHarta;
+                    ket.baitulMaal = "Baitul Maal (Sisa harta tidak dikembalikan ke Suami/Istri)";
                 }
             }
         }
