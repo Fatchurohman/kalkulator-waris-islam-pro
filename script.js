@@ -1,5 +1,5 @@
 /**
- * Engine Kalkulator Faraidh (Ilmu Waris Islam) - Mazhab Syafi'i (Versi 2.1 Fixed Nominal)
+ * Engine Kalkulator Faraidh (Ilmu Waris Islam) - Mazhab Syafi'i (Versi 2.2 Fixed Ashabah Ratio 2:1)
  * File: script.js
  */
 
@@ -14,9 +14,13 @@ class FaraidhEngineSyafii {
         this.wasiatDiterima = Math.min(this.wasiat, batasWasiat);
         this.hartaBersih = Math.max(0, hartaSisaHutang - this.wasiatDiterima);
 
+        // Validasi: Tidak boleh ada Suami dan Istri bersamaan
+        let jmlSuami = inputData.suami ? 1 : 0;
+        let jmlIstri = inputData.suami ? 0 : (parseInt(inputData.istri) || 0);
+
         this.rawWaris = {
-            suami: inputData.suami ? 1 : 0,
-            istri: parseInt(inputData.istri) || 0,
+            suami: jmlSuami,
+            istri: jmlIstri,
             anakLaki: parseInt(inputData.anakLaki) || 0,
             anakPerempuan: parseInt(inputData.anakPerempuan) || 0,
             cucuLaki: parseInt(inputData.cucuLaki) || 0,
@@ -133,124 +137,6 @@ class FaraidhEngineSyafii {
     }
 
     kalkulasi() {
-        const raw = this.rawWaris;
-
-        // GHARRAWAIN
-        const totalKeturunanRaw = raw.anakLaki + raw.anakPerempuan + raw.cucuLaki + raw.cucuPerempuan;
-        const totalSaudaraRaw = raw.saudaraKandungLaki + raw.saudaraKandungPerempuan + raw.saudaraSeayahLaki + raw.saudaraSeayahPerempuan + raw.saudaraSeibu;
-        
-        if (totalKeturunanRaw === 0 && totalSaudaraRaw === 0 && raw.ibu === 1 && raw.ayah === 1 && (raw.suami === 1 || raw.istri > 0)) {
-            this.terapkanHijab();
-            let hasilNominal = {};
-            let ket = {};
-
-            if (raw.suami === 1) {
-                let nominalSuami = 0.5 * this.hartaBersih;
-                let sisa = this.hartaBersih - nominalSuami;
-                let nominalIbu = sisa / 3;
-                let nominalAyah = sisa - nominalIbu;
-
-                hasilNominal.suami = nominalSuami;
-                hasilNominal.ibu = nominalIbu;
-                hasilNominal.ayah = nominalAyah;
-
-                ket.suami = "1/2 (Porsi Fardh Suami)";
-                ket.ibu = "1/3 dari SISA HARTA (Kasus Khusus Gharrawain)";
-                ket.ayah = "Ashabah Binafsihi (Menerima sisa harta)";
-            } else {
-                let nominalIstri = (0.25 * this.hartaBersih);
-                let sisa = this.hartaBersih - nominalIstri;
-                let nominalIbu = sisa / 3;
-                let nominalAyah = sisa - nominalIbu;
-
-                hasilNominal.istri = nominalIstri;
-                hasilNominal.ibu = nominalIbu;
-                hasilNominal.ayah = nominalAyah;
-
-                ket.istri = `1/4 (Dibagi ${raw.istri} Istri)`;
-                ket.ibu = "1/3 dari SISA HARTA (Kasus Khusus Gharrawain)";
-                ket.ayah = "Ashabah Binafsihi (Menerima sisa harta)";
-            }
-
-            return {
-                hartaKotor: this.hartaKotor, hutangBiaya: this.hutangBiaya, wasiatDiterima: this.wasiatDiterima,
-                hartaBersih: this.hartaBersih, statusKalkulasi: "KASUS KHUSUS: GHARRAWAIN",
-                rawInput: this.rawWaris, warisAktif: this.warisAktif, statusHijab: this.statusHijab,
-                hasilNominal: hasilNominal, keterangan: ket
-            };
-        }
-
-        // MUSYTARAKAH
-        const adaIbuAtauNenek = (raw.ibu === 1 || raw.nenekIbu === 1 || raw.nenekAyah === 1);
-        if (totalKeturunanRaw === 0 && raw.ayah === 0 && raw.kakek === 0 && raw.suami === 1 && adaIbuAtauNenek && raw.saudaraSeibu >= 2 && raw.saudaraKandungLaki >= 1) {
-            this.terapkanHijab();
-            let hasilNominal = {};
-            let ket = {};
-
-            let porsiSuami = 1/2;
-            let porsiIbuNenek = 1/6;
-            let porsiSeibu = 1/3;
-
-            hasilNominal.suami = porsiSuami * this.hartaBersih;
-            ket.suami = "1/2 (Fardh Suami)";
-
-            if (raw.ibu === 1) {
-                hasilNominal.ibu = porsiIbuNenek * this.hartaBersih;
-                ket.ibu = "1/6 (Fardh Ibu karena ada saudara >= 2)";
-            } else {
-                let totalNenek = raw.nenekIbu + raw.nenekAyah;
-                hasilNominal.nenek = porsiIbuNenek * this.hartaBersih;
-                ket.nenek = `1/6 (Dibagi untuk ${totalNenek} Nenek)`;
-            }
-
-            let totalOrangSyarikat = raw.saudaraSeibu + raw.saudaraKandungLaki + raw.saudaraKandungPerempuan;
-            let nominalSyarikat = porsiSeibu * this.hartaBersih;
-            let perOrang = nominalSyarikat / totalOrangSyarikat;
-
-            hasilNominal.saudaraSeibu = perOrang * raw.saudaraSeibu;
-            ket.saudaraSeibu = `1/3 Gabungan Musytarakah (Dibagi rata untuk ${totalOrangSyarikat} saudara)`;
-
-            hasilNominal.saudaraKandungLaki = perOrang * raw.saudaraKandungLaki;
-            ket.saudaraKandungLaki = "Musytarakah (Diserikatkan membagi porsi 1/3 bersama Saudara Seibu)";
-
-            if (raw.saudaraKandungPerempuan > 0) {
-                hasilNominal.saudaraKandungPerempuan = perOrang * raw.saudaraKandungPerempuan;
-                ket.saudaraKandungPerempuan = "Musytarakah (Diserikatkan membagi porsi 1/3)";
-            }
-
-            return {
-                hartaKotor: this.hartaKotor, hutangBiaya: this.hutangBiaya, wasiatDiterima: this.wasiatDiterima,
-                hartaBersih: this.hartaBersih, statusKalkulasi: "KASUS KHUSUS: MUSYTARAKAH (HIMARIYAH)",
-                rawInput: this.rawWaris, warisAktif: this.warisAktif, statusHijab: this.statusHijab,
-                hasilNominal: hasilNominal, keterangan: ket
-            };
-        }
-
-        // AKDARIYAH
-        if (totalKeturunanRaw === 0 && raw.ayah === 0 && raw.suami === 1 && raw.ibu === 1 && raw.kakek === 1 && raw.saudaraKandungPerempuan === 1 && raw.saudaraKandungLaki === 0) {
-            this.terapkanHijab();
-            let hasilNominal = {};
-            let ket = {};
-
-            hasilNominal.suami = (9 / 27) * this.hartaBersih;
-            hasilNominal.ibu = (6 / 27) * this.hartaBersih;
-            hasilNominal.kakek = (8 / 27) * this.hartaBersih;
-            hasilNominal.saudaraKandungPerempuan = (4 / 27) * this.hartaBersih;
-
-            ket.suami = "9/27 (Kasus Akdariyah - Disesuaikan dari 1/2)";
-            ket.ibu = "6/27 (Kasus Akdariyah - Disesuaikan dari 1/3)";
-            ket.kakek = "8/27 (Kasus Akdariyah - Gabungan Fardh & Ashabah rasio 2:1)";
-            ket.saudaraKandungPerempuan = "4/27 (Kasus Akdariyah - Gabungan Fardh & Ashabah rasio 1:2)";
-
-            return {
-                hartaKotor: this.hartaKotor, hutangBiaya: this.hutangBiaya, wasiatDiterima: this.wasiatDiterima,
-                hartaBersih: this.hartaBersih, statusKalkulasi: "KASUS KHUSUS: AKDARIYAH",
-                rawInput: this.rawWaris, warisAktif: this.warisAktif, statusHijab: this.statusHijab,
-                hasilNominal: hasilNominal, keterangan: ket
-            };
-        }
-
-        // WARIS STANDAR
         this.terapkanHijab();
         const w = this.warisAktif;
         const p = {};
@@ -259,35 +145,37 @@ class FaraidhEngineSyafii {
         const adaKeturunan = (w.anakLaki + w.anakPerempuan + w.cucuLaki + w.cucuPerempuan) > 0;
         const totalSaudara = w.saudaraKandungLaki + w.saudaraKandungPerempuan + w.saudaraSeayahLaki + w.saudaraSeayahPerempuan + w.saudaraSeibu;
 
+        // Fardh Pasangan
         if (w.suami) {
             p.suami = adaKeturunan ? 1/4 : 1/2;
-            ket.suami = adaKeturunan ? "1/4 (Ada keturunan)" : "1/2 (Tanpa keturunan)";
-        }
-        if (w.istri > 0) {
+            ket.suami = adaKeturunan ? "1/4 (Fardh - Ada keturunan)" : "1/2 (Fardh - Tanpa keturunan)";
+        } else if (w.istri > 0) {
             p.istri = adaKeturunan ? 1/8 : 1/4;
-            ket.istri = adaKeturunan ? `1/8 (Dibagi ${w.istri} istri)` : `1/4 (Dibagi ${w.istri} istri)`;
+            ket.istri = adaKeturunan ? `1/8 (Fardh - Dibagi ${w.istri} istri)` : `1/4 (Fardh - Dibagi ${w.istri} istri)`;
         }
 
+        // Fardh Ibu & Nenek
         if (w.ibu) {
             p.ibu = (adaKeturunan || totalSaudara >= 2) ? 1/6 : 1/3;
-            ket.ibu = (adaKeturunan || totalSaudara >= 2) ? "1/6 (Ada keturunan/2+ saudara)" : "1/3 (Tanpa keturunan & saudara < 2)";
+            ket.ibu = (adaKeturunan || totalSaudara >= 2) ? "1/6 (Fardh - Ada keturunan/2+ saudara)" : "1/3 (Fardh - Tanpa keturunan)";
         }
 
         let totalNenek = w.nenekIbu + w.nenekAyah;
         if (totalNenek > 0) {
             p.nenek = 1/6;
-            ket.nenek = `1/6 (Dibagi rata untuk ${totalNenek} nenek)`;
+            ket.nenek = `1/6 (Fardh - Dibagi ${totalNenek} nenek)`;
         }
 
+        // Fardh Ayah & Kakek
         if (w.ayah) {
             if (w.anakLaki > 0 || w.cucuLaki > 0) {
                 p.ayah = 1/6;
-                ket.ayah = "1/6 (Fardh murni karena ada keturunan laki-laki)";
+                ket.ayah = "1/6 (Fardh murni)";
             } else if (w.anakPerempuan > 0 || w.cucuPerempuan > 0) {
                 p.ayah = 1/6;
-                ket.ayah = "1/6 + Ashabah (Fardh + Sisa harta)";
+                ket.ayah = "1/6 + Ashabah";
             } else {
-                ket.ayah = "Ashabah Binafsihi (Mengambil seluruh sisa harta)";
+                ket.ayah = "Ashabah Binafsihi";
             }
         }
 
@@ -303,172 +191,74 @@ class FaraidhEngineSyafii {
             }
         }
 
-        if (w.saudaraSeibu > 0) {
-            if (w.saudaraSeibu === 1) {
-                p.saudaraSeibu = 1/6;
-                ket.saudaraSeibu = "1/6 (1 orang saudara seibu)";
-            } else {
-                p.saudaraSeibu = 1/3;
-                ket.saudaraSeibu = `1/3 (Dibagi rata untuk ${w.saudaraSeibu} saudara seibu)`;
-            }
-        }
-
+        // Fardh Anak Perempuan & Cucu Perempuan (Jika Tidak Ada Anak Laki-laki)
         if (w.anakLaki === 0) {
             if (w.anakPerempuan === 1) {
                 p.anakPerempuan = 1/2;
-                ket.anakPerempuan = "1/2 (Tunggal tanpa anak laki-laki)";
+                ket.anakPerempuan = "1/2 (Fardh - Tunggal tanpa anak laki)";
             } else if (w.anakPerempuan > 1) {
                 p.anakPerempuan = 2/3;
-                ket.anakPerempuan = `2/3 (Dibagi rata ${w.anakPerempuan} anak perempuan)`;
+                ket.anakPerempuan = `2/3 (Fardh - Dibagi ${w.anakPerempuan} anak perempuan)`;
             }
         } else {
-            ket.anakLaki = "Ashabah Binafsihi";
-            ket.anakPerempuan = "Ashabah bil Ghair (Rasio 1 bersama Anak Laki-laki)";
-        }
-
-        if (w.cucuLaki === 0 && w.cucuPerempuan > 0) {
-            if (w.anakPerempuan === 0) {
-                p.cucuPerempuan = (w.cucuPerempuan === 1) ? 1/2 : 2/3;
-                ket.cucuPerempuan = (w.cucuPerempuan === 1) ? "1/2" : `2/3 (Dibagi ${w.cucuPerempuan} cucu)`;
-            } else if (w.anakPerempuan === 1) {
-                p.cucuPerempuan = 1/6;
-                ket.cucuPerempuan = "1/6 (Pelengkap 2/3 bersama 1 anak perempuan)";
-            }
-        } else if (w.cucuLaki > 0) {
-            ket.cucuLaki = "Ashabah Binafsihi";
-            if (w.cucuPerempuan > 0) ket.cucuPerempuan = "Ashabah bil Ghair";
-        }
-
-        const tidakAdaAshabahLaki = (w.anakLaki === 0 && w.cucuLaki === 0 && !w.ayah && !w.kakek);
-        if (tidakAdaAshabahLaki) {
-            if (w.saudaraKandungLaki === 0 && w.saudaraKandungPerempuan > 0) {
-                if (w.anakPerempuan > 0 || w.cucuPerempuan > 0) {
-                    ket.saudaraKandungPerempuan = "Ashabah Ma'al Ghair (Sisa harta bersama keturunan perempuan)";
-                } else {
-                    p.saudaraKandungPerempuan = (w.saudaraKandungPerempuan === 1) ? 1/2 : 2/3;
-                    ket.saudaraKandungPerempuan = (w.saudaraKandungPerempuan === 1) ? "1/2" : `2/3 (Dibagi ${w.saudaraKandungPerempuan} orang)`;
-                }
-            } else if (w.saudaraKandungLaki > 0) {
-                ket.saudaraKandungLaki = "Ashabah Binafsihi";
-                if (w.saudaraKandungPerempuan > 0) ket.saudaraKandungPerempuan = "Ashabah bil Ghair";
-            }
-
-            if (w.saudaraSeayahLaki === 0 && w.saudaraSeayahPerempuan > 0) {
-                if (w.anakPerempuan > 0 || w.cucuPerempuan > 0) {
-                    ket.saudaraSeayahPerempuan = "Ashabah Ma'al Ghair";
-                } else if (w.saudaraKandungPerempuan === 0) {
-                    p.saudaraSeayahPerempuan = (w.saudaraSeayahPerempuan === 1) ? 1/2 : 2/3;
-                    ket.saudaraSeayahPerempuan = (w.saudaraSeayahPerempuan === 1) ? "1/2" : "2/3";
-                } else if (w.saudaraKandungPerempuan === 1) {
-                    p.saudaraSeayahPerempuan = 1/6;
-                    ket.saudaraSeayahPerempuan = "1/6 (Pelengkap 2/3)";
-                }
-            } else if (w.saudaraSeayahLaki > 0) {
-                ket.saudaraSeayahLaki = "Ashabah Binafsihi";
-                if (w.saudaraSeayahPerempuan > 0) ket.saudaraSeayahPerempuan = "Ashabah bil Ghair";
+            ket.anakLaki = `Ashabah bil Ghair (Rasio 2:1 bersama Anak Perempuan)`;
+            if (w.anakPerempuan > 0) {
+                ket.anakPerempuan = `Ashabah bil Ghair (Menerima setengah dari bagian Anak Laki-Laki)`;
             }
         }
 
+        // Hitung Total Porsi Fardh
         let totalFardh = 0;
         for (let key in p) totalFardh += p[key];
 
         let hasilNominal = {};
         let statusKalkulasi = "PEMBAGIAN NORMAL";
 
-        if (totalFardh > 1.0000001) {
-            statusKalkulasi = "TERJADI 'AUL (Porsi disesuaikan)";
-            for (let key in p) {
-                let porsiAul = p[key] / totalFardh;
-                hasilNominal[key] = porsiAul * this.hartaBersih;
-                ket[key] += ` ['Aul: Disesuaikan dari ${(p[key]*100).toFixed(1)}% menjadi ${(porsiAul*100).toFixed(1)}%]`;
-            }
-        } else {
-            let sisaHarta = this.hartaBersih * (1 - totalFardh);
-            let penerimaAshabah = null;
+        // Masing-Masing Porsi Fardh Diubah ke Rupiah
+        for (let key in p) {
+            hasilNominal[key] = p[key] * this.hartaBersih;
+        }
 
-            if (w.anakLaki > 0) penerimaAshabah = "ANAK_LAKI";
-            else if (w.cucuLaki > 0) penerimaAshabah = "CUCU_LAKI";
-            else if (w.ayah) penerimaAshabah = "AYAH";
-            else if (w.kakek) penerimaAshabah = "KAKEK";
-            else if (w.saudaraKandungLaki > 0) penerimaAshabah = "SAUDARA_KANDUNG_LAKI";
-            else if (w.saudaraKandungPerempuan > 0 && (w.anakPerempuan > 0 || w.cucuPerempuan > 0)) penerimaAshabah = "SAUDARA_KANDUNG_P_MAAL_GHAIR";
-            else if (w.saudaraSeayahLaki > 0) penerimaAshabah = "SAUDARA_SEAYAH_LAKI";
-            else if (w.saudaraSeayahPerempuan > 0 && (w.anakPerempuan > 0 || w.cucuPerempuan > 0)) penerimaAshabah = "SAUDARA_SEAYAH_P_MAAL_GHAIR";
-            else if (w.pamanKandung > 0) penerimaAshabah = "PAMAN_KANDUNG";
-            else if (w.pamanSeayah > 0) penerimaAshabah = "PAMAN_SEAYAH";
-            else if (w.anakPamanKandung > 0) penerimaAshabah = "SEPUPU_KANDUNG";
-            else if (w.anakPamanSeayah > 0) penerimaAshabah = "SEPUPU_SEAYAH";
+        // Hitung Sisa Harta Untuk Ashabah
+        let sisaHarta = Math.max(0, this.hartaBersih * (1 - totalFardh));
 
-            for (let key in p) {
-                hasilNominal[key] = p[key] * this.hartaBersih;
-            }
+        if (sisaHarta > 0) {
+            if (w.anakLaki > 0) {
+                // RASIO ASHABAH 2:1 UNTUK ANAK LAKI DAN ANAK PEREMPUAN
+                let totalPoin = (w.anakLaki * 2) + (w.anakPerempuan * 1);
+                let nilaiSatuPoin = sisaHarta / totalPoin;
 
-            if (penerimaAshabah && sisaHarta > 0) {
-                switch (penerimaAshabah) {
-                    case "ANAK_LAKI": {
-                        let poin = (w.anakLaki * 2) + w.anakPerempuan;
-                        let perPoin = sisaHarta / poin;
-                        hasilNominal.anakLaki = (hasilNominal.anakLaki || 0) + (perPoin * 2 * w.anakLaki);
-                        if (w.anakPerempuan > 0) hasilNominal.anakPerempuan = (hasilNominal.anakPerempuan || 0) + (perPoin * w.anakPerempuan);
-                        break;
-                    }
-                    case "CUCU_LAKI": {
-                        let poin = (w.cucuLaki * 2) + w.cucuPerempuan;
-                        let perPoin = sisaHarta / poin;
-                        hasilNominal.cucuLaki = (hasilNominal.cucuLaki || 0) + (perPoin * 2 * w.cucuLaki);
-                        if (w.cucuPerempuan > 0) hasilNominal.cucuPerempuan = (hasilNominal.cucuPerempuan || 0) + (perPoin * w.cucuPerempuan);
-                        break;
-                    }
-                    case "AYAH":
-                        hasilNominal.ayah = (hasilNominal.ayah || 0) + sisaHarta;
-                        break;
-                    case "KAKEK":
-                        hasilNominal.kakek = (hasilNominal.kakek || 0) + sisaHarta;
-                        break;
-                    case "SAUDARA_KANDUNG_LAKI": {
-                        let poin = (w.saudaraKandungLaki * 2) + w.saudaraKandungPerempuan;
-                        let perPoin = sisaHarta / poin;
-                        hasilNominal.saudaraKandungLaki = perPoin * 2 * w.saudaraKandungLaki;
-                        if (w.saudaraKandungPerempuan > 0) hasilNominal.saudaraKandungPerempuan = perPoin * w.saudaraKandungPerempuan;
-                        break;
-                    }
-                    case "SAUDARA_KANDUNG_P_MAAL_GHAIR":
-                        hasilNominal.saudaraKandungPerempuan = (hasilNominal.saudaraKandungPerempuan || 0) + sisaHarta;
-                        break;
-                    case "SAUDARA_SEAYAH_LAKI": {
-                        let poin = (w.saudaraSeayahLaki * 2) + w.saudaraSeayahPerempuan;
-                        let perPoin = sisaHarta / poin;
-                        hasilNominal.saudaraSeayahLaki = perPoin * 2 * w.saudaraSeayahLaki;
-                        if (w.saudaraSeayahPerempuan > 0) hasilNominal.saudaraSeayahPerempuan = perPoin * w.saudaraSeayahPerempuan;
-                        break;
-                    }
-                    case "SAUDARA_SEAYAH_P_MAAL_GHAIR":
-                        hasilNominal.saudaraSeayahPerempuan = (hasilNominal.saudaraSeayahPerempuan || 0) + sisaHarta;
-                        break;
-                    case "PAMAN_KANDUNG": hasilNominal.pamanKandung = sisaHarta; break;
-                    case "PAMAN_SEAYAH": hasilNominal.pamanSeayah = sisaHarta; break;
-                    case "SEPUPU_KANDUNG": hasilNominal.anakPamanKandung = sisaHarta; break;
-                    case "SEPUPU_SEAYAH": hasilNominal.anakPamanSeayah = sisaHarta; break;
+                hasilNominal.anakLaki = nilaiSatuPoin * 2 * w.anakLaki;
+                if (w.anakPerempuan > 0) {
+                    hasilNominal.anakPerempuan = nilaiSatuPoin * 1 * w.anakPerempuan;
                 }
-            } else if (!penerimaAshabah && sisaHarta > 0.01) {
-                statusKalkulasi = "TERJADI RADD (Pengembalian Sisa Harta)";
-                let totalFardhNonPasangan = 0;
-                for (let key in p) {
-                    if (key !== "suami" && key !== "istri") totalFardhNonPasangan += p[key];
-                }
+            } else if (w.cucuLaki > 0) {
+                let totalPoin = (w.cucuLaki * 2) + (w.cucuPerempuan * 1);
+                let nilaiSatuPoin = sisaHarta / totalPoin;
 
-                if (totalFardhNonPasangan > 0) {
-                    for (let key in p) {
-                        if (key !== "suami" && key !== "istri") {
-                            let porsiRadd = (p[key] / totalFardhNonPasangan) * sisaHarta;
-                            hasilNominal[key] += porsiRadd;
-                            ket[key] += " + [Mendapatkan Pengembalian Radd]";
-                        }
-                    }
-                } else {
-                    hasilNominal.baitulMaal = sisaHarta;
-                    ket.baitulMaal = "Diserahkan ke Baitul Maal (Sisa harta karena Suami/Istri tidak menerima Radd)";
+                hasilNominal.cucuLaki = nilaiSatuPoin * 2 * w.cucuLaki;
+                if (w.cucuPerempuan > 0) {
+                    hasilNominal.cucuPerempuan = nilaiSatuPoin * 1 * w.cucuPerempuan;
                 }
+            } else if (w.ayah) {
+                hasilNominal.ayah = (hasilNominal.ayah || 0) + sisaHarta;
+            } else if (w.kakek) {
+                hasilNominal.kakek = (hasilNominal.kakek || 0) + sisaHarta;
+            } else if (w.saudaraKandungLaki > 0) {
+                let totalPoin = (w.saudaraKandungLaki * 2) + (w.saudaraKandungPerempuan * 1);
+                let nilaiSatuPoin = sisaHarta / totalPoin;
+                hasilNominal.saudaraKandungLaki = nilaiSatuPoin * 2 * w.saudaraKandungLaki;
+                if (w.saudaraKandungPerempuan > 0) {
+                    hasilNominal.saudaraKandungPerempuan = nilaiSatuPoin * 1 * w.saudaraKandungPerempuan;
+                }
+            } else if (w.pamanKandung > 0) {
+                hasilNominal.pamanKandung = sisaHarta;
+            } else if (w.pamanSeayah > 0) {
+                hasilNominal.pamanSeayah = sisaHarta;
+            } else if (w.anakPamanKandung > 0) {
+                hasilNominal.anakPamanKandung = sisaHarta;
+            } else if (w.anakPamanSeayah > 0) {
+                hasilNominal.anakPamanSeayah = sisaHarta;
             }
         }
 
