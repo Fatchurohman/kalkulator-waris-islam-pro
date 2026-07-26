@@ -1,5 +1,5 @@
 /**
- * Engine Kalkulator Faraidh (Ilmu Waris Islam) - Mazhab Syafi'i (Versi 2.3 Full Fardh & 'Aul/Radd)
+ * Engine Kalkulator Faraidh (Ilmu Waris Islam) - Mazhab Syafi'i (Versi 2.5 Perfect 'Aul Detection)
  * File: script.js
  */
 
@@ -86,7 +86,7 @@ class FaraidhEngineSyafii {
         }
 
         if (adaKeturunan || adaAyah || w.kakek > 0) {
-            h.saudaraSeibu = { terhalang: true, oleh: "Keturunan atau Ayah/Kakek" };
+            h.saudaraSeibu = { terhalang: true, oleh: "Keturunan / Ayah / Kakek" };
             w.saudaraSeibu = 0;
         }
 
@@ -101,7 +101,7 @@ class FaraidhEngineSyafii {
         const sKandungP_IsAshabahMaalGhair = (w.saudaraKandungPerempuan > 0) && (adaAnakP || w.cucuPerempuan > 0) && (!adaKeturunanLaki) && (!adaAyah);
 
         if (adaKeturunanLaki || adaAyah || w.saudaraKandungLaki > 0 || sKandungP_IsAshabahMaalGhair) {
-            let penghalang = "Ayah / Anak-Cucu Laki / Saudara Kandung";
+            let penghalang = "Ayah / Keturunan Laki / Saudara Kandung";
             h.saudaraSeayahLaki = { terhalang: true, oleh: penghalang };
             h.saudaraSeayahPerempuan = { terhalang: true, oleh: penghalang };
             w.saudaraSeayahLaki = 0;
@@ -125,12 +125,12 @@ class FaraidhEngineSyafii {
         }
 
         if (adaAshabahLakiLebihDekat || w.pamanKandung > 0 || w.pamanSeayah > 0) {
-            h.anakPamanKandung = { terhalang: true, oleh: "Paman atau lebih dekat" };
+            h.anakPamanKandung = { terhalang: true, oleh: "Paman" };
             w.anakPamanKandung = 0;
         }
 
         if (adaAshabahLakiLebihDekat || w.pamanKandung > 0 || w.pamanSeayah > 0 || w.anakPamanKandung > 0) {
-            h.anakPamanSeayah = { terhalang: true, oleh: "Sepupu Kandung atau lebih dekat" };
+            h.anakPamanSeayah = { terhalang: true, oleh: "Sepupu Kandung" };
             w.anakPamanSeayah = 0;
         }
     }
@@ -138,7 +138,7 @@ class FaraidhEngineSyafii {
     kalkulasi() {
         const raw = this.rawWaris;
 
-        // KASUS KHUSUS GHARRAWAIN
+        // KASUS GHARRAWAIN
         const totalKeturunanRaw = raw.anakLaki + raw.anakPerempuan + raw.cucuLaki + raw.cucuPerempuan;
         const totalSaudaraRaw = raw.saudaraKandungLaki + raw.saudaraKandungPerempuan + raw.saudaraSeayahLaki + raw.saudaraSeayahPerempuan + raw.saudaraSeibu;
 
@@ -183,7 +183,7 @@ class FaraidhEngineSyafii {
             };
         }
 
-        // KASUS WARIS STANDAR
+        // KASUS NORMAL / 'AUL / RADD
         this.terapkanHijab();
         const w = this.warisAktif;
         const p = {};
@@ -280,7 +280,7 @@ class FaraidhEngineSyafii {
         }
 
         // 7. Saudara Kandung Perempuan
-        if (w.anakLaki === 0 && w.cucuLaki === 0 && !w.ayah && !w.kakek) {
+        if (w.anakLaki === 0 && w.cucuLaki === 0 && w.ayah === 0 && w.kakek === 0) {
             if (w.saudaraKandungLaki === 0 && w.saudaraKandungPerempuan > 0) {
                 if (w.anakPerempuan > 0 || w.cucuPerempuan > 0) {
                     ket.saudaraKandungPerempuan = "Ashabah ma'al Ghair (Sisa harta bersama keturunan perempuan)";
@@ -310,20 +310,22 @@ class FaraidhEngineSyafii {
             }
         }
 
-        // Kalkulasi Total Porsi Fardh
+        // HITUNG TOTAL PORSI FARDH
         let totalFardh = 0;
-        for (let key in p) totalFardh += p[key];
+        for (let key in p) {
+            totalFardh += p[key];
+        }
 
         let hasilNominal = {};
         let statusKalkulasi = "PEMBAGIAN NORMAL";
 
+        // PENANGANAN 'AUL (JIKA TOTAL PORSI FARDH > 1)
         if (totalFardh > 1.000001) {
-            // TERJADI 'AUL (Porsi melebihi 1, disesuaikan secara proporsional)
-            statusKalkulasi = "TERJADI 'AUL (Porsi disesuaikan secara proporsional)";
+            statusKalkulasi = "TERJADI 'AUL (Total porsi melebihi 1, disesuaikan secara proporsional)";
             for (let key in p) {
                 let porsiAul = p[key] / totalFardh;
                 hasilNominal[key] = porsiAul * this.hartaBersih;
-                ket[key] += ` ['Aul: Disesuaikan dari ${(p[key]*100).toFixed(1)}% menjadi ${(porsiAul*100).toFixed(1)}%]`;
+                ket[key] += ` ['Aul: Porsi disesuaikan dari ${(p[key]*100).toFixed(1)}% menjadi ${(porsiAul*100).toFixed(1)}%]`;
             }
         } else {
             let sisaHarta = Math.max(0, this.hartaBersih * (1 - totalFardh));
@@ -377,7 +379,6 @@ class FaraidhEngineSyafii {
                 }
 
                 if (!adaAshabah && sisaHarta > 0.01) {
-                    // TERJADI RADD (Dikembalikan ke ahli waris Fardh non-pasangan)
                     statusKalkulasi = "TERJADI RADD (Sisa harta dikembalikan secara proporsional)";
                     let totalFardhNonPasangan = 0;
                     for (let key in p) {
